@@ -1,26 +1,21 @@
 // The control catalog is effectively static, so fetch it once per session and
-// keep a control_id -> ControlDetail lookup in memory. Detail (description,
-// evidence_requirements) is fetched lazily and cached on first use — that's the
-// data the remediation/Add-Evidence UI needs.
+// keep a control_id -> ControlSummary lookup in memory. Today that's used for
+// human-readable control names; full control detail can be added when there's
+// a control-detail experience to back it.
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { api } from "../api/client";
-import type { ControlDetail, ControlSummary } from "../api/types";
+import type { ControlSummary } from "../api/types";
 
 interface CatalogState {
   summaries: Record<string, ControlSummary>;
-  ready: boolean;
-  /** Lazily load + cache full detail for one control. */
-  getDetail: (controlId: string) => Promise<ControlDetail>;
 }
 
 const CatalogContext = createContext<CatalogState | null>(null);
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const [summaries, setSummaries] = useState<Record<string, ControlSummary>>({});
-  const [ready, setReady] = useState(false);
-  const detailCache = useRef<Map<string, Promise<ControlDetail>>>(new Map());
 
   useEffect(() => {
     let active = true;
@@ -33,23 +28,14 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         setSummaries(map);
       })
       .catch(() => {
-        /* dashboard still works without the catalog map; names just fall back to ids */
-      })
-      .finally(() => active && setReady(true));
+        /* names just fall back to control ids if the catalog can't be loaded */
+      });
     return () => {
       active = false;
     };
   }, []);
 
-  const getDetail = useCallback((controlId: string): Promise<ControlDetail> => {
-    const cached = detailCache.current.get(controlId);
-    if (cached) return cached;
-    const p = api.getControl(controlId);
-    detailCache.current.set(controlId, p);
-    return p;
-  }, []);
-
-  return <CatalogContext value={{ summaries, ready, getDetail }}>{children}</CatalogContext>;
+  return <CatalogContext value={{ summaries }}>{children}</CatalogContext>;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

@@ -57,17 +57,28 @@ export function SystemDetailPage() {
   }, [id]);
 
   // After adding evidence: close modal, re-run, and highlight the result.
+  // Evidence is already saved by the time this runs, so if the re-assessment
+  // fails we must say so explicitly rather than fail silently.
   const onEvidenceSubmitted = useCallback(
     async (controlId: string) => {
       const before = compliance?.results.find((r) => r.control_id === controlId)?.status;
       setEvidenceTarget(null);
-      const c = await api.runAssessment(id);
-      setCompliance(c);
-      setNeverRun(false);
-      const after = c.results.find((r) => r.control_id === controlId)?.status;
-      if (before !== after) {
-        setFlash(`${controlId}: ${before} → ${after}`);
-        setTimeout(() => setFlash(null), 5000);
+      setError(null);
+      try {
+        const c = await api.runAssessment(id);
+        setCompliance(c);
+        setNeverRun(false);
+        const after = c.results.find((r) => r.control_id === controlId)?.status;
+        if (before !== after) {
+          setFlash(`${controlId}: ${before} → ${after}`);
+          setTimeout(() => setFlash(null), 5000);
+        }
+      } catch (err) {
+        setError(
+          err instanceof ApiError
+            ? `Evidence was saved, but re-assessment failed: ${err.message}`
+            : "Evidence was saved, but re-assessment failed. Re-run the assessment to see its impact.",
+        );
       }
     },
     [compliance, id],

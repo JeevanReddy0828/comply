@@ -4,7 +4,6 @@
 import type {
   AISystem,
   Compliance,
-  ControlDetail,
   ControlSummary,
   Evidence,
   EvidenceCreate,
@@ -60,6 +59,16 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     throw new ApiError(0, `Could not reach the Comply API at ${BASE_URL}. Is the backend running?`);
   }
 
+  // Session expiry: a 401 while we were carrying a token means the JWT is no
+  // longer valid. Clear it and bounce to login rather than surfacing confusing
+  // inline errors. (A 401 with no token is a failed login/register — let it
+  // through so the form can show "invalid credentials".)
+  if (res.status === 401 && getToken()) {
+    setToken(null);
+    if (!window.location.pathname.startsWith("/login")) window.location.href = "/login";
+    throw new ApiError(401, "Your session has expired. Please sign in again.");
+  }
+
   if (res.status === 204) return undefined as T;
 
   const text = await res.text();
@@ -97,5 +106,4 @@ export const api = {
 
   // catalog
   listControls: () => request<ControlSummary[]>("/catalog/controls"),
-  getControl: (id: string) => request<ControlDetail>(`/catalog/controls/${id}`),
 };
