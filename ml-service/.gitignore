@@ -1,0 +1,12 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.pytest_cache/
+
+# model + index artifacts (downloaded / built, not versioned)
+models/
+.cache/
+data/index/
+*.faiss
