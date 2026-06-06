@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comply — EU AI Act compliance, with the evidence to prove it</title>
+    <meta
+      name="description"
+      content="Comply turns the runtime evidence your AI already produces into EU AI Act conformity artifacts. Explainable control results, audit-ready, built for high-risk AI like hiring tools."
+    />
+    <style>
+      :root {
+        --bg: #f7f8fa;
+        --surface: #ffffff;
+        --border: #e3e6ea;
+        --text: #1c2430;
+        --text-muted: #5b6675;
+        --text-subtle: #8a94a3;
+        --accent: #2f5bea;
+        --accent-hover: #2247c4;
+        --accent-soft: #eaf0ff;
+        --ok: #1a7f4b;
+        --ok-soft: #e6f4ec;
+        --warn: #9a6b00;
+        --bad: #c0392b;
+        --bad-soft: #fbe9e7;
+        --radius: 10px;
+        --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
+        --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        line-height: 1.55;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      h1, h2, h3 { line-height: 1.2; margin: 0; }
+      .wrap { max-width: 1040px; margin: 0 auto; padding: 0 1.5rem; }
+      .btn {
+        display: inline-block;
+        background: var(--accent);
+        color: #fff;
+        padding: 0.7rem 1.3rem;
+        border-radius: var(--radius);
+        font-weight: 600;
+      }
+      .btn:hover { background: var(--accent-hover); text-decoration: none; }
+      .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--border); }
+      .pill {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: var(--accent-soft);
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+      }
+
+      /* header */
+      header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .nav { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 0; }
+      .brand { font-weight: 700; font-size: 1.2rem; color: var(--text); }
+
+      /* hero */
+      .hero { padding: 5rem 0 3rem; text-align: center; }
+      .hero h1 { font-size: 2.7rem; max-width: 18ch; margin: 1rem auto 0; }
+      .hero p.sub { font-size: 1.2rem; color: var(--text-muted); max-width: 60ch; margin: 1.2rem auto 2rem; }
+      .hero .cta { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
+
+      /* generic section */
+      section { padding: 3.5rem 0; }
+      .section-head { text-align: center; max-width: 60ch; margin: 0 auto 2.5rem; }
+      .section-head h2 { font-size: 1.9rem; }
+      .section-head p { color: var(--text-muted); font-size: 1.05rem; margin-top: 0.8rem; }
+
+      /* stat band */
+      .band { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; text-align: center; }
+      .stat .n { font-size: 2rem; font-weight: 700; color: var(--text); }
+      .stat .l { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.3rem; }
+
+      /* cards / steps */
+      .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+      }
+      .card .num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; border-radius: 999px;
+        background: var(--accent-soft); color: var(--accent);
+        font-weight: 700; margin-bottom: 0.8rem;
+      }
+      .card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+      .card p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+
+      /* product shot */
+      .shot {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+      .shot .placeholder {
+        aspect-ratio: 16 / 9;
+        display: flex; align-items: center; justify-content: center;
+        background: repeating-linear-gradient(45deg, #fafbfc, #fafbfc 12px, #f2f4f7 12px, #f2f4f7 24px);
+        color: var(--text-subtle);
+        font-size: 0.95rem;
+        text-align: center;
+        padding: 1rem;
+      }
+      .shot .caption { padding: 0.85rem 1.1rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; }
+
+      /* status legend used inline */
+      .legend { display: inline-flex; gap: 0.5rem; align-items: center; }
+      .dot { width: 9px; height: 9px; border-radius: 999px; display: inline-block; }
+      .dot.ok { background: var(--ok); }
+      .dot.warn { background: var(--warn); }
+      .dot.bad { background: var(--bad); }
+
+      /* who-for list */
+      .who { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; max-width: 720px; margin: 0 auto; }
+      .who div { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1.1rem; }
+
+      /* cta band */
+      .cta-band { text-align: center; }
+      .cta-band .card { max-width: 640px; margin: 0 auto; padding: 2.5rem; }
+
+      footer { border-top: 1px solid var(--border); background: var(--surface); padding: 2rem 0; color: var(--text-subtle); font-size: 0.85rem; }
+      .disclaimer { max-width: 70ch; margin: 0 auto 1rem; text-align: center; }
+
+      @media (max-width: 760px) {
+        .grid3, .stats, .who { grid-template-columns: 1fr; }
+        .hero h1 { font-size: 2.1rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap nav">
+        <span class="brand">Comply</span>
+        <a class="btn" href="#pilot">Request a pilot</a>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <div class="wrap hero">
+      <span class="pill">EU AI Act · High-risk AI</span>
+      <h1>Compliance, with the evidence to prove it.</h1>
+      <p class="sub">
+        Comply turns the runtime evidence your AI already produces into EU AI Act conformity artifacts —
+        explainable, reproducible, and audit-ready. Think TurboTax for the EU AI Act.
+      </p>
+      <div class="cta">
+        <a class="btn" href="#pilot">Request a pilot</a>
+        <a class="btn ghost" href="#how">See how it works</a>
+      </div>
+    </div>
+
+    <!-- PROBLEM / STAT BAND -->
+    <div class="band">
+      <div class="wrap" style="padding: 2.5rem 1.5rem;">
+        <div class="stats">
+          <div class="stat">
+            <div class="n">€15M / 3%</div>
+            <div class="l">Maximum fine — of global turnover, whichever is higher</div>
+          </div>
+          <div class="stat">
+            <div class="n">Annex III</div>
+            <div class="l">AI used in hiring is classified high-risk</div>
+          </div>
+          <div class="stat">
+            <div class="n">Non-discretionary</div>
+            <div class="l">Conformity isn't optional spend — it's required to operate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROBLEM -->
+    <section>
+      <div class="wrap section-head">
+        <h2>Proving compliance is the hard part</h2>
+        <p>
+          The Act doesn't just ask whether your AI is safe — it asks you to <em>demonstrate</em> it, with
+          documentation, logging, oversight and risk-management evidence per control. Today that means
+          spreadsheets, consultants, and screenshots assembled by hand. It goes stale the moment your
+          system changes.
+        </p>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="band">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How Comply works</h2>
+          <p>Model the regulation as a graph of controls, then score each one against real evidence.</p>
+        </div>
+        <div class="grid3">
+          <div class="card">
+            <span class="num">1</span>
+            <h3>Register your system</h3>
+            <p>Describe the AI system and its risk classification. Comply maps the EU AI Act controls that apply.</p>
+          </div>
+          <div class="card">
+            <span class="num">2</span>
+            <h3>Bring your evidence</h3>
+            <p>Runtime traces, signed policies, configuration and oversight records — each scored for trust and freshness.</p>
+          </div>
+          <div class="card">
+            <span class="num">3</span>
+            <h3>See, and close, the gaps</h3>
+            <p>Every control gets a status. Failing ones explain what's missing and how to fix it — then re-assess instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCT PREVIEW -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Explainable control results</h2>
+          <p>
+            <span class="legend"><span class="dot ok"></span> Satisfied</span> &nbsp;
+            <span class="legend"><span class="dot warn"></span> Partial</span> &nbsp;
+            <span class="legend"><span class="dot bad"></span> Missing</span> &nbsp; — at a glance, with the
+            evidence behind every score.
+          </p>
+        </div>
+        <div class="grid3" style="grid-template-columns: 1.6fr 1fr;">
+          <div class="shot">
+            <div class="placeholder">[ Screenshot: System Detail — score 67%, control table with red/green status ]</div>
+            <div class="caption">Each control scored against evidence. No questionnaire.</div>
+          </div>
+          <div class="shot">
+            <div class="placeholder">[ Screenshot: an expanded failing control showing plain-language remediation ]</div>
+            <div class="caption">What's missing, why, and what to do next — in plain language.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIFFERENTIATOR -->
+    <section class="band">
+      <div class="wrap section-head">
+        <h2>Built to be defensible</h2>
+        <p>
+          Every score traces back to a specific piece of evidence. Assessments are deterministic and
+          reproducible, the audit trail is tamper-evident and hash-chained, and historical results prove
+          themselves. That's the difference between a compliance database and a conformity artifact.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHO IT'S FOR -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Who it's for</h2>
+          <p>We start where the high-risk classification is clearest: AI in hiring.</p>
+        </div>
+        <div class="who">
+          <div>HR-tech &amp; AI hiring/screening platforms</div>
+          <div>Compliance &amp; risk officers preparing for the Act</div>
+          <div>Founders shipping AI features into the EU</div>
+          <div>Consultants who need a defensible evidence base</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="pilot" class="band cta-band">
+      <div class="wrap">
+        <div class="card">
+          <span class="pill">Pilot program</span>
+          <h2 style="margin: 1rem 0 0.6rem;">See your AI system scored against the EU AI Act</h2>
+          <p style="color: var(--text-muted); margin: 0 0 1.5rem;">
+            We're running a small set of pilots with HR-tech teams. Bring one system; we'll show you where
+            you stand and exactly what to close.
+          </p>
+          <a class="btn" href="mailto:hello@comply.example?subject=Comply%20pilot">Request a pilot</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <p class="disclaimer">
+          Comply's control catalog is provisional engineering interpretation of Regulation (EU) 2024/1689
+          and is not legal advice. Outputs are watermarked DRAFT until validated by qualified legal review.
+        </p>
+        <p style="text-align: center; margin: 0;">© Comply. EU AI Act compliance automation.</p>
+      </div>
+    </footer>
+  </body>
+</html>
