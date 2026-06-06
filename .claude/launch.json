@@ -12,6 +12,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["-y", "serve", "marketing/landing", "-l", "4173"],
       "port": 4173
+    },
+    {
+      "name": "app-static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "serve", "frontend/dist", "-s", "-l", "5174"],
+      "port": 5174
     }
   ]
 }
