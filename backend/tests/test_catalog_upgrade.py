@@ -48,6 +48,8 @@ def test_assessment_pins_control_version_across_upgrade(clean, db):
     a1 = run_assessment(db, org_id=system.org_id, system_id=system.id, actor_id="tester")
     v1_row = db.query(AssessmentResult).filter_by(assessment_id=a1.id, control_id="LOG_001").one()
     assert v1_row.control_version == 1
+    assert v1_row.control_hash  # populated
+    hash_v1 = v1_row.control_hash
 
     # Upgrade LOG_001 to version 2 (loader inserts new version, demotes old)
     _load_control(db, LOG_001_V2, "0.2.0")
@@ -59,7 +61,9 @@ def test_assessment_pins_control_version_across_upgrade(clean, db):
     a2 = run_assessment(db, org_id=system.org_id, system_id=system.id, actor_id="tester")
     v2_row = db.query(AssessmentResult).filter_by(assessment_id=a2.id, control_id="LOG_001").one()
     assert v2_row.control_version == 2
+    assert v2_row.control_hash != hash_v1          # content changed -> hash changed
 
-    # Assessment 1's result is unchanged — still pinned to v1
+    # Assessment 1's result is a frozen historical fact — version AND hash unchanged
     v1_again = db.query(AssessmentResult).filter_by(assessment_id=a1.id, control_id="LOG_001").one()
     assert v1_again.control_version == 1
+    assert v1_again.control_hash == hash_v1

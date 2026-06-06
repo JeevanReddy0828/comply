@@ -64,6 +64,10 @@ class Control(Base):
     article_refs: Mapped[list] = mapped_column(JSONB, default=list)
     annex_refs: Mapped[list] = mapped_column(JSONB, default=list)
     catalog_version: Mapped[str] = mapped_column(String(32))
+    # sha256 of canonicalized semantic content (id, version, name, description,
+    # refs, requirements, evidence_requirements). Excludes governance metadata
+    # (confidence/review_status) and file formatting. Pins exactly-what-was-evaluated.
+    control_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     evidence_requirements: Mapped[list[EvidenceRequirement]] = relationship(
         back_populates="control", cascade="all, delete-orphan"

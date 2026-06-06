@@ -43,6 +43,9 @@ class AssessmentResult(Base):
 
     control_id: Mapped[str] = mapped_column(String(64))
     control_version: Mapped[int] = mapped_column(Integer)
+    # Pins the exact control content evaluated, so a historical result is
+    # self-proving even if catalog files later drift (complements control_version).
+    control_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     status: Mapped[str] = mapped_column(String(16))   # SATISFIED|PARTIAL|MISSING
     score: Mapped[int] = mapped_column(Integer, default=0)

@@ -25,8 +25,28 @@ from app.models import (
     Framework,
     Requirement,
 )
+from app.services.audit import compute_payload_hash
 
 _DURATION_UNITS = {"d": 86400, "h": 3600, "m": 60, "s": 1}
+
+
+def _content_hash(data: dict, ev_reqs: list[dict], req_ids: list[str]) -> str:
+    """sha256 of the control's canonicalized semantic content. Independent of YAML
+    formatting/key order; excludes governance metadata (confidence/review_status)."""
+    payload = {
+        "control_id": data["control_id"],
+        "version": int(data["version"]),
+        "name": data["name"],
+        "description": str(data["description"]).strip(),
+        "article_refs": sorted(data.get("article_refs", [])),
+        "annex_refs": sorted(data.get("annex_refs", [])),
+        "requirements": sorted(req_ids),
+        "evidence_requirements": sorted(
+            [e["type"], e["field"], e["freshness_seconds"], e["min_score"], e["required"]]
+            for e in ev_reqs
+        ),
+    }
+    return compute_payload_hash(payload)
 
 
 class CatalogIntegrityError(Exception):
@@ -164,6 +184,7 @@ def _load_control(db: Session, data: dict, catalog_version: str) -> str:
             article_refs=data.get("article_refs", []),
             annex_refs=data.get("annex_refs", []),
             catalog_version=catalog_version,
+            control_hash=_content_hash(data, ev_reqs, req_ids),
         )
     )
     for er in ev_reqs:

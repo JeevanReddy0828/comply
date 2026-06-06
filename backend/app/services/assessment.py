@@ -151,6 +151,7 @@ def evaluate(db: Session, system: AISystem, as_of: datetime) -> list[dict]:
             {
                 "control_id": control.control_id,
                 "control_version": control.version,
+                "control_hash": control.control_hash,
                 "status": status,
                 "score": score,
                 "freshness_grade": grade,
@@ -188,6 +189,7 @@ def run_assessment(db: Session, *, org_id: str, system_id: str, actor_id: str) -
                     assessment_id=assessment.id,
                     control_id=r["control_id"],
                     control_version=r["control_version"],
+                    control_hash=r["control_hash"],
                     status=r["status"],
                     score=r["score"],
                     freshness_grade=r["freshness_grade"],
