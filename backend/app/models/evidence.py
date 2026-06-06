@@ -42,6 +42,11 @@ class EvidenceItem(Base):
     payload: Mapped[dict] = mapped_column(JSONB, default=dict)
     hash: Mapped[str] = mapped_column(String(64))
 
+    # Normalized at ingestion so assessment (Step 8) is deterministic aggregation,
+    # not re-computation. VALID | DEGRADED (stored). REJECTED inputs are 422'd, not
+    # stored. DEGRADED = older than the coarse global staleness ceiling.
+    validity_state: Mapped[str] = mapped_column(String(16), default="VALID")
+
     # Pointer lives on the NEW row (→ the older item it replaces), so superseding
     # is a pure INSERT — never an UPDATE of the old row. Keeps the table strictly
     # append-only. "Current" evidence = items not referenced by any other item's

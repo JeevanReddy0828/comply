@@ -32,11 +32,13 @@ app.add_middleware(
 
 from app.routers import audit as audit_router  # noqa: E402
 from app.routers import auth as auth_router  # noqa: E402
+from app.routers import evidence as evidence_router  # noqa: E402
 from app.routers import systems as systems_router  # noqa: E402
 
 app.include_router(auth_router.router)
 app.include_router(audit_router.router)
 app.include_router(systems_router.router)
+app.include_router(evidence_router.router)
 
 
 @app.get("/")
