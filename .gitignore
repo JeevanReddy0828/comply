@@ -25,3 +25,6 @@ dist/
 Thumbs.db
 .idea/
 .vscode/
+
+# Claude — keep shared launch config, ignore local machine settings
+.claude/settings.local.json
