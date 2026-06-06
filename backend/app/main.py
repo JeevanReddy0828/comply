@@ -30,6 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.routers import assessments as assessments_router  # noqa: E402
 from app.routers import audit as audit_router  # noqa: E402
 from app.routers import auth as auth_router  # noqa: E402
 from app.routers import evidence as evidence_router  # noqa: E402
@@ -39,6 +40,7 @@ app.include_router(auth_router.router)
 app.include_router(audit_router.router)
 app.include_router(systems_router.router)
 app.include_router(evidence_router.router)
+app.include_router(assessments_router.router)
 
 
 @app.get("/")

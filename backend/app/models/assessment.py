@@ -49,5 +49,7 @@ class AssessmentResult(Base):
     freshness_grade: Mapped[str | None] = mapped_column(String(1), nullable=True)
     evidence_count: Mapped[int] = mapped_column(Integer, default=0)
     missing_requirements: Mapped[list] = mapped_column(JSONB, default=list)
+    # DEGRADED is informational (spec §6): stored as a warning, never gates status/score.
+    warnings: Mapped[list] = mapped_column(JSONB, default=list)
 
     assessment: Mapped[Assessment] = relationship(back_populates="results")
