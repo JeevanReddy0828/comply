@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -27,6 +28,9 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(256))
     name: Mapped[str] = mapped_column(String(100), default="")
     role: Mapped[str] = mapped_column(String(32), default="ReadOnly")  # Admin|ComplianceOfficer|ReadOnly
+    # Capabilities are first-class: seeded from role defaults at registration, but
+    # stored so per-user grants become configuration, not an authorization refactor.
+    capabilities: Mapped[list] = mapped_column(JSONB, default=list)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)

@@ -30,6 +30,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.routers import auth as auth_router  # noqa: E402
+
+app.include_router(auth_router.router)
+
 
 @app.get("/")
 def root():

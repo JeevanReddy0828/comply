@@ -48,6 +48,24 @@ def db():
 
 
 @pytest.fixture
+def clean(db):
+    """Truncate all data tables. TRUNCATE does not fire the row-level append-only
+    triggers, so it is allowed even on audit_events / evidence_items."""
+    from sqlalchemy import text
+
+    db.execute(
+        text(
+            "TRUNCATE audit_events, evidence_items, assessment_results, assessments, "
+            "ai_systems, users, organizations, control_requirements, "
+            "evidence_requirements, controls, requirements, frameworks "
+            "RESTART IDENTITY CASCADE;"
+        )
+    )
+    db.commit()
+    yield db
+
+
+@pytest.fixture
 def clean_graph(db):
     """Truncate mutable graph tables before a test (controls/requirements are not
     append-only, so this is allowed)."""
