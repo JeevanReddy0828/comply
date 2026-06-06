@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: POST_MARKET_MONITORING
+name: "Post-Market Monitoring"
+description: >
+  Establish and document a post-market monitoring system proportionate to the
+  risks, actively collecting and reviewing performance data.
+article_refs: [Art.72]
+applies_to: [HIGH]
+controls: [PMM_001, PMM_002]

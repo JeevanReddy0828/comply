@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: HUMAN_OVERSIGHT
+name: "Human Oversight"
+description: >
+  Design and develop so the system can be effectively overseen by natural
+  persons, including the ability to intervene or interrupt.
+article_refs: [Art.14]
+applies_to: [HIGH]
+controls: [HUMAN_001, HUMAN_002, HUMAN_003, HUMAN_004]

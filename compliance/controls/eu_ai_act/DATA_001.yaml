@@ -1,0 +1,18 @@
+control_id: DATA_001
+name: "Training Data Governance Documented"
+description: >
+  Data governance and management practices for training, validation, and testing
+  datasets are documented, covering design choices, collection, and preparation.
+frameworks: [EU_AI_ACT]
+requirements: [DATA_GOVERNANCE]
+article_refs: [Art.10(2)]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: DOCUMENT
+    field: data_governance_doc
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

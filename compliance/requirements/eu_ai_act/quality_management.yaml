@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: QUALITY_MANAGEMENT
+name: "Quality Management System"
+description: >
+  Put a quality management system in place ensuring compliance, documented in a
+  systematic and orderly manner.
+article_refs: [Art.17]
+applies_to: [HIGH]
+controls: [QMS_001, QMS_002]

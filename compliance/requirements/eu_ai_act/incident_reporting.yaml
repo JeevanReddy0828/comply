@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: INCIDENT_REPORTING
+name: "Serious Incident Reporting"
+description: >
+  Report serious incidents to market surveillance authorities within the
+  prescribed timeframes.
+article_refs: [Art.73]
+applies_to: [HIGH]
+controls: [INC_001]

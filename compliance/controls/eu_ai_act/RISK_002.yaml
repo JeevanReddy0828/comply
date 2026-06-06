@@ -1,0 +1,18 @@
+control_id: RISK_002
+name: "Known and Foreseeable Risks Identified"
+description: >
+  Known and reasonably foreseeable risks to health, safety, and fundamental
+  rights are identified and analysed for the intended purpose.
+frameworks: [EU_AI_ACT]
+requirements: [RISK_MANAGEMENT]
+article_refs: [Art.9(2)]
+annex_refs: [Annex IV Section 5]
+evidence_requirements:
+  - type: DOCUMENT
+    field: risk_register
+    freshness: 180d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

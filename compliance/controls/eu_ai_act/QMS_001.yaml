@@ -1,0 +1,18 @@
+control_id: QMS_001
+name: "Quality Management System Documented"
+description: >
+  A quality management system ensuring compliance is in place, documented through
+  written policies, procedures, and instructions.
+frameworks: [EU_AI_ACT]
+requirements: [QUALITY_MANAGEMENT]
+article_refs: [Art.17]
+annex_refs: [Annex IV Section 7]
+evidence_requirements:
+  - type: DOCUMENT
+    field: qms_documentation
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

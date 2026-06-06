@@ -1,0 +1,20 @@
+# Comply — Control → Article Map
+# Artifact 6 (part 2 of 3). Traceability index: which controls touch each Article.
+# Powers "show me everything backing Art.12" in the UI and the audit trail.
+
+framework: EU_AI_ACT
+
+articles:
+  Art.9:   [RISK_001, RISK_002, RISK_003, RISK_004]
+  Art.10:  [DATA_001, DATA_002, DATA_003, DATA_004]
+  Art.11:  [DOC_001, DOC_002]
+  Art.12:  [LOG_001, LOG_002, LOG_003]
+  Art.13:  [TRANS_001, TRANS_002, TRANS_003]
+  Art.14:  [HUMAN_001, HUMAN_002, HUMAN_003, HUMAN_004]
+  Art.15:  [ROBUST_001, ROBUST_002, ROBUST_003]
+  Art.17:  [QMS_001, QMS_002]
+  Art.19:  [LOG_001, LOG_004]
+  Art.26:  [HUMAN_004]
+  Art.47:  [DOC_003]
+  Art.72:  [PMM_001, PMM_002]
+  Art.73:  [INC_001]

@@ -1,0 +1,18 @@
+control_id: DOC_002
+name: "System Architecture Documented"
+description: >
+  The general logic, system architecture, and computational resources used to
+  develop, train, test, and validate the system are documented.
+frameworks: [EU_AI_ACT]
+requirements: [TECHNICAL_DOCUMENTATION]
+article_refs: [Art.11]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: DOCUMENT
+    field: architecture_doc
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

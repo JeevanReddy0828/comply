@@ -1,0 +1,12 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: TECHNICAL_DOCUMENTATION
+name: "Technical Documentation"
+description: >
+  Draw up and keep up to date the technical documentation demonstrating
+  conformity (Annex IV).
+article_refs: [Art.11]
+annex_refs: [Annex IV]
+applies_to: [HIGH]
+controls: [DOC_001, DOC_002, DOC_003]

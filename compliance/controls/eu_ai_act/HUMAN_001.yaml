@@ -1,0 +1,18 @@
+control_id: HUMAN_001
+name: "Human Oversight Measures Designed"
+description: >
+  The system is designed with appropriate human-machine interface tools so it
+  can be effectively overseen by natural persons during use.
+frameworks: [EU_AI_ACT]
+requirements: [HUMAN_OVERSIGHT]
+article_refs: [Art.14(1), Art.14(2)]
+annex_refs: [Annex IV Section 2, Annex IV Section 3]
+evidence_requirements:
+  - type: DOCUMENT
+    field: oversight_design
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

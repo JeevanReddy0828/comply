@@ -1,0 +1,18 @@
+control_id: DATA_003
+name: "Data Bias Examined and Mitigated"
+description: >
+  Possible biases likely to affect health, safety, or fundamental rights, or
+  lead to prohibited discrimination, are examined and mitigated.
+frameworks: [EU_AI_ACT]
+requirements: [DATA_GOVERNANCE]
+article_refs: [Art.10(2)(f), Art.10(2)(g)]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: DOCUMENT
+    field: bias_assessment
+    freshness: 180d
+    min_score: 40
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: RISK_MANAGEMENT
+name: "Risk Management System"
+description: >
+  Establish, implement, document and maintain a continuous risk management
+  system across the system lifecycle.
+article_refs: [Art.9]
+applies_to: [HIGH]
+controls: [RISK_001, RISK_002, RISK_003, RISK_004]

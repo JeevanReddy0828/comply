@@ -1,0 +1,18 @@
+control_id: LOG_002
+name: "Model Version Recorded Per Decision"
+description: >
+  Each logged decision records the model identity and version used, enabling
+  traceability of which system state produced an output.
+frameworks: [EU_AI_ACT]
+requirements: [TRACEABILITY]
+article_refs: [Art.12]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: TELEMETRY
+    field: model_version
+    freshness: 7d
+    min_score: 90
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

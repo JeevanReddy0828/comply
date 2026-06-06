@@ -1,0 +1,50 @@
+# Comply — Framework Definition
+# EU AI Act. The first framework on the engine.
+
+catalog_version: 0.1.0
+
+id: EU_AI_ACT
+name: "EU Artificial Intelligence Act"
+version: "Regulation (EU) 2024/1689"
+jurisdiction: EU
+source_url: "https://eur-lex.europa.eu/eli/reg/2024/1689/oj"
+effective_date: 2026-08-02      # high-risk obligations enforceable
+last_reviewed: null
+
+effective_dates:
+  prohibited_practices: 2025-02-02
+  gpai_obligations: 2025-08-02
+  high_risk: 2026-08-02            # the deadline this product targets
+  embedded_high_risk: 2027-08-02
+
+risk_tiers:
+  - id: UNACCEPTABLE
+    description: "Prohibited practices (Art.5). Cannot be deployed."
+  - id: HIGH
+    description: "Annex III / Annex I high-risk. Full Chapter III Section 2 obligations."
+  - id: LIMITED
+    description: "Transparency obligations only (Art.50)."
+  - id: MINIMAL
+    description: "No mandatory obligations."
+
+annex_iii_categories:
+  - id: biometrics
+    ref: "Annex III(1)"
+  - id: critical_infrastructure
+    ref: "Annex III(2)"
+  - id: education
+    ref: "Annex III(3)"
+  - id: employment
+    ref: "Annex III(4)"
+  - id: essential_services
+    ref: "Annex III(5)"
+  - id: law_enforcement
+    ref: "Annex III(6)"
+  - id: migration_asylum_border
+    ref: "Annex III(7)"
+  - id: justice_democracy
+    ref: "Annex III(8)"
+
+penalty_reference:
+  max_fine: "EUR 15,000,000 or 3% of global annual turnover, whichever is higher"
+  article: "Art.99"

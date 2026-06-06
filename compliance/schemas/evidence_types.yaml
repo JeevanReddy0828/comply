@@ -1,0 +1,91 @@
+# Comply — Evidence Type Registry
+# Week 1.5 addition. The canonical evidence vocabulary. Week 4 scoring, freshness,
+# and gap detection all build against this — defined here as content, never
+# invented inside backend code.
+#
+# Each evidence item declares one `evidence_type`. Its `trust_score` is compared
+# against a control's EvidenceRequirement.min_score to decide whether it counts.
+# Each type rolls up to a `category` matching the EvidenceRequirement.type enum
+# used in control files (TELEMETRY | DOCUMENT | ATTESTATION | CONFIG).
+
+catalog_version: 0.1.0
+
+# Trust score rationale:
+#   Higher score = harder to fabricate, more independently verifiable.
+#   Signed/automated runtime evidence > attestations > manual uploads.
+
+evidence_types:
+
+  # ── TELEMETRY ── automatically captured runtime evidence
+  human_override_event:
+    category: TELEMETRY
+    trust_score: 95
+    description: "Recorded human intervention/override of a system output."
+    source_hint: [AGENTWATCH, OTEL]
+
+  telemetry_trace:
+    category: TELEMETRY
+    trust_score: 90
+    description: "Decision trace captured by the Comply/AgentWatch SDK."
+    source_hint: [AGENTWATCH]
+
+  signed_otel_span:
+    category: TELEMETRY
+    trust_score: 90
+    description: "OTEL span with a verifiable signature on the payload."
+    source_hint: [OTEL]
+
+  otel_span:
+    category: TELEMETRY
+    trust_score: 85
+    description: "Unsigned OpenTelemetry span ingested via OTLP."
+    source_hint: [OTEL]
+
+  monitoring_snapshot:
+    category: TELEMETRY
+    trust_score: 90
+    description: "Periodic post-market monitoring metric snapshot."
+    source_hint: [AGENTWATCH, OTEL, API]
+
+  # ── ATTESTATION ── human-asserted records
+  incident_record:
+    category: ATTESTATION
+    trust_score: 80
+    description: "Logged serious-incident record with timestamp and actor."
+    source_hint: [API, MANUAL]
+
+  signed_policy:
+    category: ATTESTATION
+    trust_score: 75
+    description: "Internal policy/procedure with an authorised signature."
+    source_hint: [MANUAL]
+
+  training_record:
+    category: ATTESTATION
+    trust_score: 60
+    description: "Record attesting oversight-personnel competence/training."
+    source_hint: [MANUAL]
+
+  # ── CONFIG ── declared system configuration
+  config_declaration:
+    category: CONFIG
+    trust_score: 70
+    description: "Declared configuration (e.g. log retention, stop capability)."
+    source_hint: [API, MANUAL]
+
+  # ── DOCUMENT ── uploaded artifacts
+  manual_document:
+    category: DOCUMENT
+    trust_score: 40
+    description: "Manually uploaded document with no signature/verification."
+    source_hint: [MANUAL]
+
+# Freshness grading (Week 4) is computed separately from trust, by comparing
+# evidence age against the control's EvidenceRequirement.freshness:
+#   A: age <= 25% of window      C: age <= 100% of window
+#   B: age <= 50% of window      D: stale (age > window)
+freshness_grades:
+  A: "<= 25% of required window"
+  B: "<= 50% of required window"
+  C: "<= 100% of required window"
+  D: "stale — exceeds required window"

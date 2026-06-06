@@ -1,0 +1,18 @@
+control_id: RISK_003
+name: "Risk Mitigation Measures Implemented"
+description: >
+  Appropriate and targeted risk management measures are adopted to address
+  identified risks, with residual risk reduced as far as practicable.
+frameworks: [EU_AI_ACT]
+requirements: [RISK_MANAGEMENT]
+article_refs: [Art.9(5)]
+annex_refs: [Annex IV Section 5]
+evidence_requirements:
+  - type: DOCUMENT
+    field: mitigation_measures
+    freshness: 180d
+    min_score: 40
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

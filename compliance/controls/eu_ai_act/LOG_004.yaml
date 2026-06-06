@@ -1,0 +1,18 @@
+control_id: LOG_004
+name: "Logs Retained for Required Period"
+description: >
+  Automatically generated logs are retained for a period appropriate to the
+  intended purpose, at least six months unless otherwise provided by law.
+frameworks: [EU_AI_ACT]
+requirements: [TRACEABILITY]
+article_refs: [Art.19]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: CONFIG
+    field: log_retention_policy
+    freshness: 365d
+    min_score: 70
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

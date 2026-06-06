@@ -1,0 +1,18 @@
+control_id: DATA_002
+name: "Dataset Representativeness Assessed"
+description: >
+  Datasets are relevant, sufficiently representative, and to the best extent
+  possible free of errors and complete for the intended purpose.
+frameworks: [EU_AI_ACT]
+requirements: [DATA_GOVERNANCE]
+article_refs: [Art.10(3)]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: DOCUMENT
+    field: dataset_assessment
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

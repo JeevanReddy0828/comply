@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: DATA_GOVERNANCE
+name: "Data and Data Governance"
+description: >
+  Training, validation and testing datasets are relevant, representative, and to
+  the best extent possible free of errors and complete.
+article_refs: [Art.10]
+applies_to: [HIGH]
+controls: [DATA_001, DATA_002, DATA_003, DATA_004]

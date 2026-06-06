@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: TRACEABILITY
+name: "Record-Keeping & Logging"
+description: >
+  Technically allow for automatic recording of events (logs) over the system's
+  lifetime, ensuring traceability of functioning.
+article_refs: [Art.12, Art.19]
+applies_to: [HIGH]
+controls: [LOG_001, LOG_002, LOG_003, LOG_004]

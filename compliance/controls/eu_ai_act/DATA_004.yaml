@@ -1,0 +1,18 @@
+control_id: DATA_004
+name: "Data Provenance Recorded"
+description: >
+  The origin of datasets and, where applicable, how data was obtained and
+  collected, is recorded.
+frameworks: [EU_AI_ACT]
+requirements: [DATA_GOVERNANCE]
+article_refs: [Art.10(2)(b)]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: DOCUMENT
+    field: data_provenance
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

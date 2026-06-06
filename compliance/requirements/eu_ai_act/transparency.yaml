@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: TRANSPARENCY
+name: "Transparency & Provision of Information to Deployers"
+description: >
+  Design for sufficient transparency; accompany with instructions for use
+  enabling deployers to interpret output and use the system appropriately.
+article_refs: [Art.13]
+applies_to: [HIGH]
+controls: [TRANS_001, TRANS_002, TRANS_003]

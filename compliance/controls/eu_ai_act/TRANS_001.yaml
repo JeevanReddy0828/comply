@@ -1,0 +1,18 @@
+control_id: TRANS_001
+name: "Instructions for Use Provided"
+description: >
+  The system is accompanied by instructions for use in an appropriate digital
+  format, containing concise, complete, correct, and clear information.
+frameworks: [EU_AI_ACT]
+requirements: [TRANSPARENCY]
+article_refs: [Art.13(2), Art.13(3)]
+annex_refs: [Annex IV Section 3]
+evidence_requirements:
+  - type: DOCUMENT
+    field: instructions_for_use
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

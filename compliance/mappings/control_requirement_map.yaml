@@ -1,0 +1,18 @@
+# Comply — Control → Requirement Map
+# Artifact 6 (part 1 of 3). Index view: which controls satisfy each requirement.
+# Derived from control files; kept as an explicit artifact so the gap engine and
+# coverage checks have a single lookup without scanning every control file.
+
+framework: EU_AI_ACT
+
+requirements:
+  RISK_MANAGEMENT:        [RISK_001, RISK_002, RISK_003, RISK_004]
+  DATA_GOVERNANCE:        [DATA_001, DATA_002, DATA_003, DATA_004]
+  TECHNICAL_DOCUMENTATION: [DOC_001, DOC_002, DOC_003]
+  TRACEABILITY:           [LOG_001, LOG_002, LOG_003, LOG_004]
+  TRANSPARENCY:           [TRANS_001, TRANS_002, TRANS_003]
+  HUMAN_OVERSIGHT:        [HUMAN_001, HUMAN_002, HUMAN_003, HUMAN_004]
+  ACCURACY_ROBUSTNESS_SECURITY: [ROBUST_001, ROBUST_002, ROBUST_003]
+  QUALITY_MANAGEMENT:     [QMS_001, QMS_002]
+  POST_MARKET_MONITORING: [PMM_001, PMM_002]
+  INCIDENT_REPORTING:     [INC_001]

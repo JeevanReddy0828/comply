@@ -1,0 +1,18 @@
+control_id: TRANS_002
+name: "Capabilities and Limitations Disclosed"
+description: >
+  Instructions disclose the system's capabilities, limitations, and the level of
+  accuracy, including known or foreseeable circumstances that may affect them.
+frameworks: [EU_AI_ACT]
+requirements: [TRANSPARENCY]
+article_refs: [Art.13(3)(b)]
+annex_refs: [Annex IV Section 3]
+evidence_requirements:
+  - type: DOCUMENT
+    field: capabilities_limitations
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

@@ -1,0 +1,18 @@
+control_id: HUMAN_004
+name: "Oversight Personnel Competence Ensured"
+description: >
+  Natural persons assigned to oversight have the necessary competence, training,
+  and authority to carry out that role.
+frameworks: [EU_AI_ACT]
+requirements: [HUMAN_OVERSIGHT]
+article_refs: [Art.14(4), Art.26(2)]
+annex_refs: [Annex IV Section 3]
+evidence_requirements:
+  - type: ATTESTATION
+    field: oversight_training_record
+    freshness: 365d
+    min_score: 60
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

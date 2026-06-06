@@ -1,0 +1,18 @@
+control_id: LOG_001
+name: "Decision Trace Retention"
+description: >
+  The system automatically records events (logs) over its lifetime, retaining a
+  trace of each decision sufficient to reconstruct system functioning.
+frameworks: [EU_AI_ACT]
+requirements: [TRACEABILITY]
+article_refs: [Art.12, Art.19]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: TELEMETRY
+    field: decision_trace
+    freshness: 7d
+    min_score: 90
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

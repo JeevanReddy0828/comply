@@ -1,0 +1,18 @@
+control_id: PMM_001
+name: "Post-Market Monitoring Plan Established"
+description: >
+  A documented post-market monitoring system and plan proportionate to the risks
+  is established to actively collect and review performance data.
+frameworks: [EU_AI_ACT]
+requirements: [POST_MARKET_MONITORING]
+article_refs: [Art.72]
+annex_refs: [Annex IV Section 9]
+evidence_requirements:
+  - type: DOCUMENT
+    field: pmm_plan
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

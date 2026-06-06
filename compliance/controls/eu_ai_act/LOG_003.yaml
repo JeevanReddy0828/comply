@@ -1,0 +1,18 @@
+control_id: LOG_003
+name: "Input and Output Metadata Captured"
+description: >
+  Input metadata and the resulting output are captured for each decision,
+  supporting traceability and post-market monitoring.
+frameworks: [EU_AI_ACT]
+requirements: [TRACEABILITY]
+article_refs: [Art.12(2)]
+annex_refs: [Annex IV Section 2]
+evidence_requirements:
+  - type: TELEMETRY
+    field: io_metadata
+    freshness: 7d
+    min_score: 80
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

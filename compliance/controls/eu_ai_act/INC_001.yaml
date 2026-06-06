@@ -1,0 +1,18 @@
+control_id: INC_001
+name: "Serious Incident Reporting Procedure"
+description: >
+  A documented procedure exists to report serious incidents to the relevant
+  market surveillance authorities within the timeframes required by Art.73.
+frameworks: [EU_AI_ACT]
+requirements: [INCIDENT_REPORTING]
+article_refs: [Art.73]
+annex_refs: [Annex IV Section 9]
+evidence_requirements:
+  - type: DOCUMENT
+    field: incident_procedure
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

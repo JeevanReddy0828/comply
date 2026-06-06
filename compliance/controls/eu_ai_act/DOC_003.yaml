@@ -1,0 +1,18 @@
+control_id: DOC_003
+name: "Declaration of Conformity Generated"
+description: >
+  An EU declaration of conformity is drawn up and kept for 10 years after the
+  system is placed on the market.
+frameworks: [EU_AI_ACT]
+requirements: [TECHNICAL_DOCUMENTATION]
+article_refs: [Art.47]
+annex_refs: [Annex IV Section 8, Annex V]
+evidence_requirements:
+  - type: DOCUMENT
+    field: declaration_of_conformity
+    freshness: 3650d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

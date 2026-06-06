@@ -1,0 +1,11 @@
+catalog_version: 0.1.0
+framework: EU_AI_ACT
+
+id: ACCURACY_ROBUSTNESS_SECURITY
+name: "Accuracy, Robustness and Cybersecurity"
+description: >
+  Achieve appropriate levels of accuracy, robustness and cybersecurity, and
+  perform consistently across the lifecycle.
+article_refs: [Art.15]
+applies_to: [HIGH]
+controls: [ROBUST_001, ROBUST_002, ROBUST_003]

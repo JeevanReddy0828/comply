@@ -1,0 +1,18 @@
+control_id: QMS_002
+name: "Change Management Process in Place"
+description: >
+  Changes to the system and its performance across the lifecycle are managed and
+  recorded, supporting the lifecycle change record in technical documentation.
+frameworks: [EU_AI_ACT]
+requirements: [QUALITY_MANAGEMENT]
+article_refs: [Art.17(1)]
+annex_refs: [Annex IV Section 6]
+evidence_requirements:
+  - type: DOCUMENT
+    field: change_log
+    freshness: 90d
+    min_score: 50
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

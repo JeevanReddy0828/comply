@@ -1,0 +1,18 @@
+control_id: HUMAN_002
+name: "Intervention and Stop Capability Available"
+description: >
+  Oversight persons can intervene in the system's operation or interrupt it
+  through a stop button or similar procedure in a safe state.
+frameworks: [EU_AI_ACT]
+requirements: [HUMAN_OVERSIGHT]
+article_refs: [Art.14(4)(e)]
+annex_refs: [Annex IV Section 3]
+evidence_requirements:
+  - type: CONFIG
+    field: stop_capability
+    freshness: 365d
+    min_score: 70
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

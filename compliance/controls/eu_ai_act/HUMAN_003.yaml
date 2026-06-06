@@ -1,0 +1,18 @@
+control_id: HUMAN_003
+name: "Human Override Events Logged"
+description: >
+  Instances where a human overseer intervenes in, overrides, or reverses a
+  system output are recorded, evidencing effective oversight.
+frameworks: [EU_AI_ACT]
+requirements: [HUMAN_OVERSIGHT]
+article_refs: [Art.14]
+annex_refs: [Annex IV Section 3]
+evidence_requirements:
+  - type: TELEMETRY
+    field: override_event
+    freshness: 30d
+    min_score: 80
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

@@ -1,0 +1,18 @@
+control_id: RISK_004
+name: "Residual Risk Evaluated and Communicated"
+description: >
+  Residual risks are judged acceptable and communicated to the deployer through
+  instructions for use.
+frameworks: [EU_AI_ACT]
+requirements: [RISK_MANAGEMENT]
+article_refs: [Art.9(5)]
+annex_refs: [Annex IV Section 5]
+evidence_requirements:
+  - type: DOCUMENT
+    field: residual_risk_statement
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

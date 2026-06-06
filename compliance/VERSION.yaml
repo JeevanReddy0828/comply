@@ -1,0 +1,24 @@
+# Comply — Catalog Version Manifest
+# Single source of truth for catalog versioning. The Week 2 loader stamps every
+# entity it loads (frameworks, requirements, controls) with the active
+# catalog_version, and every generated assessment/report records it — so we can
+# always answer: "which version of the control catalog produced this report?"
+
+catalog_version: 0.1.0
+status: PROVISIONAL          # PROVISIONAL until legal review lands LEGAL_APPROVED controls
+effective_date: 2026-05-16
+last_reviewed: null          # set when a qualified reviewer completes a pass
+
+frameworks:
+  EU_AI_ACT:
+    framework_version: "Regulation (EU) 2024/1689"
+    controls: 30
+    requirements: 10
+
+# Versioning rules:
+#   catalog_version  — bumped on any change to catalog content (semver)
+#   control.version  — per-control integer, bumped on that control's content change
+#                      (a content change also resets review_status to NEEDS_LEGAL_REVIEW
+#                       per review_methodology.md)
+#   An assessment persists BOTH the catalog_version and the per-control versions
+#   it evaluated, so a report is fully reproducible.

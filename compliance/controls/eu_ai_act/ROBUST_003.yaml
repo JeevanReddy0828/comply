@@ -1,0 +1,18 @@
+control_id: ROBUST_003
+name: "Cybersecurity Measures Implemented"
+description: >
+  Technical and organisational measures ensure the system is resilient against
+  attempts by unauthorised third parties to alter its use, outputs, or performance.
+frameworks: [EU_AI_ACT]
+requirements: [ACCURACY_ROBUSTNESS_SECURITY]
+article_refs: [Art.15(5)]
+annex_refs: [Annex IV Section 4]
+evidence_requirements:
+  - type: DOCUMENT
+    field: cybersecurity_measures
+    freshness: 180d
+    min_score: 50
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

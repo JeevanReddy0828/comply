@@ -1,0 +1,100 @@
+# Comply — Risk Classifier Input Contract
+# Artifact 3 of 7.
+#
+# The structured set of inputs whose answers determine an AI system's risk tier
+# under the EU AI Act. This contract is the stable interface that backend
+# validation, frontend forms, AND the classifier rules all build against —
+# independently and in parallel. Define this once; never guess form fields.
+#
+# Status: DESIGN. Drives Week 3 classifier + Week 3 registration UI.
+
+contract_version: 1
+framework: EU_AI_ACT
+
+inputs:
+  - key: intended_purpose
+    label: "What is the system's intended purpose?"
+    type: text
+    required: true
+    help: "Plain description of what the system is designed to do."
+
+  - key: sector
+    label: "Primary deployment sector"
+    type: enum
+    required: true
+    options:
+      - employment_hr
+      - biometrics
+      - critical_infrastructure
+      - education
+      - essential_services        # credit, insurance, public benefits
+      - law_enforcement
+      - migration_asylum_border
+      - justice_democracy
+      - product_safety_component
+      - other
+
+  - key: deployment_context
+    label: "How is the system deployed?"
+    type: enum
+    required: true
+    options:
+      - decision_support           # human makes final decision
+      - automated_decision         # system decides without human
+      - profiling
+      - generation_only            # produces content, no decisions
+
+  - key: decision_impact
+    label: "Who or what is affected by the system's outputs?"
+    type: enum
+    required: true
+    options:
+      - natural_persons_legal_effects   # legal / similarly significant effects on people
+      - natural_persons_minor
+      - organizations_only
+      - no_external_effect
+
+  - key: affected_population
+    label: "Does it process data about / affect vulnerable groups?"
+    type: enum
+    required: true
+    options:
+      - general_public
+      - workers_candidates
+      - minors
+      - vulnerable_protected
+      - none
+
+  - key: automated_decision_making
+    label: "Does the system make or materially drive automated decisions about people?"
+    type: boolean
+    required: true
+
+  - key: human_review_available
+    label: "Is meaningful human review available before outputs take effect?"
+    type: boolean
+    required: true
+
+  - key: biometric_processing
+    label: "Does it perform biometric identification or categorization?"
+    type: boolean
+    required: true
+
+  - key: safety_component
+    label: "Is the system a safety component of a regulated product (Annex I)?"
+    type: boolean
+    required: true
+
+# ── Classifier output contract ────────────────────────────────────────────
+# The classifier MUST return this shape. Explainability is mandatory — a bare
+# tier string is useless to the compliance officer who has to defend it.
+
+output_contract:
+  risk_tier: enum            # UNACCEPTABLE | HIGH | LIMITED | MINIMAL
+  confidence: float          # 0.0 – 1.0
+  annex_iii_categories: list # e.g. ["Employment"]
+  requires_human_review: bool
+  reasoning:                 # ordered, human-readable justification
+    - rule_id: string
+      explanation: string
+      inputs_matched: list

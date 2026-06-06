@@ -1,0 +1,16 @@
+# Comply — Annex IV Section → Control Map
+# Artifact 6 (part 3 of 3). Drives the Week 6 technical documentation renderer:
+# each Annex IV section is assembled from the evidence of its feeding controls.
+
+framework: EU_AI_ACT
+
+annex_iv_sections:
+  1: [DOC_001]                                  # General description
+  2: [DOC_001, DOC_002, DATA_001, DATA_002, DATA_003, DATA_004, LOG_001, LOG_002, LOG_003, HUMAN_001]
+  3: [HUMAN_001, HUMAN_002, HUMAN_003, HUMAN_004, TRANS_001, TRANS_002, TRANS_003]
+  4: [ROBUST_001, ROBUST_002, ROBUST_003]       # Performance metrics
+  5: [RISK_001, RISK_002, RISK_003, RISK_004]   # Risk management system
+  6: [QMS_002]                                  # Lifecycle changes
+  7: [QMS_001]                                  # Standards applied
+  8: [DOC_003]                                  # Declaration of conformity
+  9: [PMM_001, PMM_002, INC_001]                # Post-market monitoring

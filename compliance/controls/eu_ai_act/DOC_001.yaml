@@ -1,0 +1,18 @@
+control_id: DOC_001
+name: "Technical Documentation Maintained"
+description: >
+  Technical documentation per Annex IV is drawn up before the system is placed
+  on the market and kept up to date.
+frameworks: [EU_AI_ACT]
+requirements: [TECHNICAL_DOCUMENTATION]
+article_refs: [Art.11]
+annex_refs: [Annex IV]
+evidence_requirements:
+  - type: DOCUMENT
+    field: technical_documentation
+    freshness: 365d
+    min_score: 40
+    required: true
+confidence: HIGH
+review_status: UNREVIEWED
+version: 1

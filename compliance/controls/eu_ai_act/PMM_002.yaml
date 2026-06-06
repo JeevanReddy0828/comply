@@ -1,0 +1,18 @@
+control_id: PMM_002
+name: "Continuous Performance Monitoring Active"
+description: >
+  Performance and behaviour are continuously monitored in production, with fresh
+  telemetry demonstrating ongoing functioning consistent with intended purpose.
+frameworks: [EU_AI_ACT]
+requirements: [POST_MARKET_MONITORING]
+article_refs: [Art.72(1)]
+annex_refs: [Annex IV Section 9]
+evidence_requirements:
+  - type: TELEMETRY
+    field: monitoring_snapshot
+    freshness: 1d
+    min_score: 90
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1

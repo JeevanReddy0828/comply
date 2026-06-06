@@ -1,0 +1,105 @@
+# Comply — Annex IV Section Model
+# Artifact 4 of 7.
+#
+# Annex IV of the EU AI Act defines the technical documentation a high-risk
+# system provider must produce. This is the REAL deliverable customers need —
+# not a compliance score, but the documentation package itself.
+#
+# This model defines each Annex IV section, where its content comes from, and
+# which controls/evidence feed it. The Week 6 renderer (WeasyPrint) consumes
+# this model. Designing it NOW forces the evidence model to be shaped toward
+# producing Annex IV — if the graph is right, the PDF is trivial; if the graph
+# is wrong, no renderer can save it.
+#
+# Status: DESIGN (schema only; renderer is Week 6).
+
+annex_iv_version: 1
+framework: EU_AI_ACT
+source: "Annex IV, Regulation (EU) 2024/1689"
+
+sections:
+  - section: 1
+    title: "General description of the AI system"
+    content_source: SYSTEM_METADATA
+    fields:
+      - intended_purpose
+      - provider_name
+      - system_version
+      - interaction_with_hardware_software
+    feeding_controls: [DOC_001]
+
+  - section: 2
+    title: "Detailed description of elements and development process"
+    content_source: MIXED            # metadata + telemetry
+    fields:
+      - development_methods
+      - design_specifications
+      - system_architecture
+      - data_requirements
+      - human_oversight_measures
+    feeding_controls: [DOC_001, DOC_002, HUMAN_001, DATA_001]
+
+  - section: 3
+    title: "Monitoring, functioning and control of the system"
+    content_source: MIXED
+    fields:
+      - capabilities_and_limitations
+      - accuracy_metrics
+      - foreseeable_unintended_outcomes
+      - human_oversight_technical_measures
+    feeding_controls: [ROBUST_001, HUMAN_001, HUMAN_002]
+
+  - section: 4
+    title: "Performance metrics — appropriateness for intended purpose"
+    content_source: TELEMETRY
+    fields:
+      - accuracy_metrics
+      - robustness_metrics
+      - relevant_performance_metrics
+    feeding_controls: [ROBUST_001, ROBUST_002]
+
+  - section: 5
+    title: "Risk management system"
+    content_source: MIXED
+    fields:
+      - risk_management_description
+      - identified_risks
+      - mitigation_measures
+    feeding_controls: [RISK_001, RISK_002, RISK_003]
+
+  - section: 6
+    title: "Lifecycle changes"
+    content_source: DOCUMENT
+    fields:
+      - changes_log
+    feeding_controls: [QMS_001]
+
+  - section: 7
+    title: "Standards and specifications applied"
+    content_source: DOCUMENT
+    fields:
+      - harmonized_standards
+      - specifications
+    feeding_controls: [QMS_001]
+
+  - section: 8
+    title: "EU declaration of conformity"
+    content_source: GENERATED
+    fields:
+      - declaration_of_conformity
+    feeding_controls: [DOC_003]
+
+  - section: 9
+    title: "Post-market monitoring plan"
+    content_source: MIXED
+    fields:
+      - post_market_monitoring_plan
+      - monitoring_metrics
+    feeding_controls: [PMM_001, PMM_002]
+
+# content_source legend:
+#   SYSTEM_METADATA — from the registration form
+#   TELEMETRY       — auto-populated from ingested runtime evidence
+#   DOCUMENT        — uploaded artifact
+#   GENERATED       — produced from a template + graph state
+#   MIXED           — combination

@@ -1,0 +1,18 @@
+control_id: TRANS_003
+name: "Accuracy Levels Communicated to Deployers"
+description: >
+  The levels of accuracy and the relevant accuracy metrics are communicated to
+  deployers via the instructions for use.
+frameworks: [EU_AI_ACT]
+requirements: [TRANSPARENCY]
+article_refs: [Art.13(3)(b)(ii)]
+annex_refs: [Annex IV Section 3]
+evidence_requirements:
+  - type: TELEMETRY
+    field: accuracy_metrics
+    freshness: 30d
+    min_score: 80
+    required: true
+confidence: MEDIUM
+review_status: NEEDS_LEGAL_REVIEW
+version: 1
