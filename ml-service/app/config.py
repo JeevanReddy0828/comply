@@ -18,10 +18,14 @@ class Settings(BaseSettings):
     # Comply core API (Phase 2: emit guard events as evidence)
     comply_api_url: str = "http://localhost:8000"
 
-    # RAG (Phases 4-5)
+    # RAG
     anthropic_api_key: str = ""
     rag_answer_model: str = "claude-sonnet-4-5"
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    catalog_dir: str = "../compliance"
+    act_text_path: str = "data/eu_ai_act.txt"
+    index_dir: str = "data/index"
+    rag_top_k: int = 5
 
     cors_origins: str = "http://localhost:5173,http://localhost:5174,http://localhost:5175"
 

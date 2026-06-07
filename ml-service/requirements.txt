@@ -16,5 +16,6 @@ sentencepiece>=0.2  # DeBERTa-v3 tokenizer
 # RAG (Phases 3-5): local retrieval + hosted generation
 sentence-transformers>=3.0
 faiss-cpu>=1.8
+numpy>=1.26
+pyyaml>=6.0
 anthropic>=0.40
-pypdf>=4.2
