@@ -22,7 +22,7 @@ def query(body: RagQuery) -> RagResponse:
 def rag_status() -> dict:
     return {
         "index_built": store.exists(),
-        "generation_enabled": bool(settings.anthropic_api_key),
-        "answer_model": settings.rag_answer_model if settings.anthropic_api_key else None,
+        "generation_enabled": bool(settings.nvidia_api_key),
+        "answer_model": settings.rag_answer_model if settings.nvidia_api_key else None,
         "embedding_model": settings.embedding_model,
     }

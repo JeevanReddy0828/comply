@@ -26,32 +26,35 @@ def _retrieve(question: str, k: int) -> list[dict]:
 
 
 def _generate(question: str, sources: list[dict]) -> str:
-    import anthropic  # imported only when a key is configured
+    from openai import OpenAI  # imported only when a key is configured
 
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    client = OpenAI(base_url=settings.nim_base_url, api_key=settings.nvidia_api_key)
     context = "\n\n".join(
         f"[{i + 1}] ({s['citation']}) {s['text']}" for i, s in enumerate(sources)
     )
-    message = client.messages.create(
+    completion = client.chat.completions.create(
         model=settings.rag_answer_model,
-        max_tokens=1024,
-        system=_SYSTEM,
         messages=[
+            {"role": "system", "content": _SYSTEM},
             {
                 "role": "user",
                 "content": f"Question: {question}\n\nContext:\n{context}\n\n"
                 "Answer using only the context above, with inline [n] citations.",
-            }
+            },
         ],
+        temperature=0.2,
+        max_tokens=1024,
+        # Nemotron is a reasoning model; keep thinking off for tight, grounded answers.
+        extra_body={"chat_template_kwargs": {"enable_thinking": False}},
     )
-    return "".join(block.text for block in message.content if block.type == "text").strip()
+    return (completion.choices[0].message.content or "").strip()
 
 
 def answer(question: str, top_k: int | None = None) -> dict:
     k = top_k or settings.rag_top_k
     sources = _retrieve(question, k)
 
-    if settings.anthropic_api_key:
+    if settings.nvidia_api_key:
         try:
             return {"mode": "generated", "answer": _generate(question, sources), "sources": sources}
         except Exception as e:  # SDK missing, auth failure, rate limit, etc.
