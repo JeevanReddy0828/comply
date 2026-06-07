@@ -17,6 +17,37 @@
 .app-main { flex: 1; padding: 2rem 1.5rem; }
 .container { max-width: 960px; margin: 0 auto; }
 .container.narrow { max-width: 460px; }
+.container.wide { max-width: 1200px; }
+
+/* Ask: answer + sources side by side, using the full width */
+.ask-result {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .ask-result { grid-template-columns: 1fr; }
+}
+
+/* rendered markdown */
+.markdown :first-child { margin-top: 0; }
+.markdown :last-child { margin-bottom: 0; }
+.markdown p { margin: 0 0 0.7rem; line-height: 1.6; }
+.markdown ul, .markdown ol { margin: 0 0 0.7rem; padding-left: 1.3rem; }
+.markdown li { margin: 0.25rem 0; }
+.markdown h1, .markdown h2, .markdown h3 { margin: 1rem 0 0.4rem; font-size: 1.02rem; }
+.markdown strong { font-weight: 600; }
+.markdown code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.85em;
+  background: #f0f2f5;
+  padding: 0.05rem 0.3rem;
+  border-radius: 4px;
+}
+.markdown table { border-collapse: collapse; margin: 0 0 0.7rem; font-size: 0.9rem; }
+.markdown th, .markdown td { border: 1px solid var(--border); padding: 0.35rem 0.6rem; text-align: left; }
 
 .page-head {
   display: flex;

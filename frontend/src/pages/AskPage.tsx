@@ -1,4 +1,6 @@
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ragQueryStream } from "../api/ml";
 import type { RagSource } from "../api/ml";
 
@@ -47,7 +49,7 @@ export function AskPage() {
   const thinking = loading && !answerText;
 
   return (
-    <div className="container narrow">
+    <div className="container wide">
       <div className="page-head">
         <div>
           <h1>Ask the Act</h1>
@@ -85,41 +87,45 @@ export function AskPage() {
       </div>
 
       {asked && (
-        <div className="card auth-card stack" style={{ marginTop: "1rem" }}>
-          {reasoning && (
-            <details>
-              <summary className="subtle" style={{ cursor: "pointer", fontSize: "0.85rem" }}>
-                Model reasoning
-              </summary>
-              <p className="muted" style={{ whiteSpace: "pre-wrap", fontSize: "0.85rem", marginTop: "0.5rem" }}>
-                {reasoning}
-              </p>
-            </details>
-          )}
+        <div className="ask-result">
+          <div className="card auth-card stack">
+            {reasoning && (
+              <details>
+                <summary className="subtle" style={{ cursor: "pointer", fontSize: "0.85rem" }}>
+                  Model reasoning
+                </summary>
+                <p className="muted" style={{ whiteSpace: "pre-wrap", fontSize: "0.85rem", marginTop: "0.5rem" }}>
+                  {reasoning}
+                </p>
+              </details>
+            )}
 
-          {answerText ? (
-            <div>
-              <label>Answer</label>
-              <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
-                {answerText}
-                {loading && <span className="subtle"> ▍</span>}
-              </p>
-            </div>
-          ) : thinking ? (
-            <div className="muted" style={{ fontSize: "0.9rem" }}>
-              {reasoning ? "Reasoning…" : "Retrieving and thinking…"}
-            </div>
-          ) : (
-            mode === "retrieval" && (
-              <div className="notice info" style={{ margin: 0 }}>
-                Generated answers are off — showing the most relevant passages from the Act and catalog.
+            {answerText ? (
+              <div>
+                <label>Answer</label>
+                <div className="markdown">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{answerText}</ReactMarkdown>
+                </div>
+                {loading && <span className="subtle">▍</span>}
               </div>
-            )
-          )}
+            ) : thinking ? (
+              <div className="muted" style={{ fontSize: "0.9rem" }}>
+                {reasoning ? "Reasoning…" : "Retrieving and thinking…"}
+              </div>
+            ) : (
+              mode === "retrieval" && (
+                <div className="notice info" style={{ margin: 0 }}>
+                  Generated answers are off — showing the most relevant passages from the Act and catalog.
+                </div>
+              )
+            )}
+          </div>
 
-          {sources.length > 0 && (
-            <div>
-              <label>Sources</label>
+          <div className="card auth-card">
+            <label>Sources</label>
+            {sources.length === 0 ? (
+              <p className="subtle" style={{ fontSize: "0.85rem", margin: 0 }}>Retrieving…</p>
+            ) : (
               <div className="stack" style={{ gap: "0.6rem" }}>
                 {sources.map((s, i) => (
                   <div key={i} className="card" style={{ padding: "0.7rem 0.9rem" }}>
@@ -137,8 +143,8 @@ export function AskPage() {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
