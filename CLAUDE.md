@@ -108,7 +108,14 @@ backend/            FastAPI + SQLAlchemy + Alembic + Postgres
   alembic/versions/  migrations 0001–0006
   tests/             pytest (46 tests)
 docker-compose.yml  Postgres 16
-frontend/           React 19 + Vite + Tailwind (Week 3 — not yet built)
+frontend/           React 19 + Vite + TS — BUILT. Plain CSS (index.css/app.css), NOT Tailwind despite the stack-lock row below.
+ml-service/         Isolated FastAPI ML subsystem — own venv/requirements/Dockerfile (py3.12). Guard + RAG.
+  app/guard/         prompt-injection: regex rules + DeBERTa classifier, rate limiting
+  app/rag/           EU AI Act + catalog -> FAISS retrieval; NVIDIA NIM streamed answers
+  data/eu_ai_act.txt corpus (versioned); data/index/ FAISS (gitignored, rebuilt via ingest)
+  tests/             pytest (6 tests)
+scripts/            demo_journey.py (journey smoke test), seed_demo.py (realistic ~67% demo)
+marketing/          landing/index.html + demo-shot-list.md (drafts)
 ```
 
 ### Stack Lock
@@ -171,12 +178,20 @@ Every control carries `confidence` (HIGH/MEDIUM/LOW interpretation certainty) an
 
 ## Current State
 
-- **Backend: COMPLETE**, tagged `v0.2.1` on GitHub (`JeevanReddy0828/comply`, private).
-  Catalog + Auth + Audit + Systems + Evidence + Assessment + catalog read API + control_hash. 46 tests passing. Migrations 0001–0006.
-- **Frontend: Week 3 pilot MVP built** (`frontend/`, Vite + React 19 + TS). Pages: Login/Register, Dashboard (Day-0 empty-state onboarding → systems list), Register System (manual risk tier + acknowledgement), System Detail (the product — score, status-colored control table, expandable plain-language remediation, Add-Evidence modal that auto re-assesses). Light theme; SATISFIED=green / PARTIAL=amber / MISSING=red. Catalog hydrated once per session. Success criterion **met & verified in-browser**: register → assess → see failed control → add evidence → re-assess → control flips to SATISFIED, no docs. NOT_APPLICABLE (non-HIGH) path verified. Build + lint clean. Gaps are surfaced inline in System Detail (no separate Gaps page). Demo-script-first validator at `scripts/demo_journey.py`. Still deferred: evidence timeline, audit explorer, catalog browser, settings, user management.
+Repo `JeevanReddy0828/comply` (private). Latest release tag **`v0.4.0`** on `main`; `main` is slightly ahead of the tag (Ask-page Markdown + full-width polish merged after it). Tags: v0.2.0/v0.2.1 (backend) → v0.3.0 (frontend) → v0.4.0 (ML service). No open PRs.
+
+- **Backend: COMPLETE** (`v0.2.1`). Catalog + Auth (JWT, capability RBAC) + Audit (hash-chained, append-only triggers) + Systems + Evidence + Assessment + catalog read API + control_hash. 46 tests. Migrations 0001–0006.
+- **Frontend: pilot MVP built** (`frontend/`, Vite + React 19 + TS; **plain CSS, not Tailwind**). Pages: Login/Register, Dashboard (Day-0 onboarding → systems list), Register System (manual risk tier + acknowledgement), System Detail (score, status-colored control table, plain-language remediation, Add-Evidence modal that auto re-assesses), **Guard** and **Ask** (ML pages). Light theme; SATISFIED=green/PARTIAL=amber/MISSING=red. Core loop verified in-browser (register→assess→add evidence→flip to SATISFIED); NOT_APPLICABLE path verified. Build + lint clean.
+- **ML service: built** (`ml-service/`, isolated FastAPI, `v0.4.0`). Two advisory capabilities, kept OUT of the deterministic assessment path:
+  - **Guard** — `POST /guard/check`: regex + DeBERTa prompt-injection classifier (graceful-degrades to rules if torch/model missing), per-id rate limiting. Frontend `/guard` page logs a blocked attempt as Comply evidence (`human_override_event` → satisfies HUMAN_003) — runtime defense becomes scored evidence.
+  - **RAG** — `POST /rag/query` + `/rag/query/stream` (SSE): local FAISS retrieval over EU AI Act text + catalog (588 chunks, citations), answer generated via **NVIDIA NIM** (OpenAI-compatible, `nemotron-3-ultra-550b`), streamed with thinking. Frontend `/ask` page renders Markdown, full-width 2-col (answer | sources). Retrieval-only without a key. 6 tests.
+- **Run the ML stack:** `cd ml-service && python -m venv venv && venv/Scripts/pip install -r requirements.txt`; build index once: `python -m app.rag.ingest`; serve: `uvicorn app.main:app --port 8100`. RAG generation needs `NVIDIA_API_KEY` in `ml-service/.env` (gitignored — not committed). Frontend env: `VITE_API_URL=:8000`, `VITE_ML_URL=:8100`.
+
+### Open GitHub issues (regulatory-content, not code)
+**#4** PARTIAL/amber state unreachable — all 30 controls are single-requirement. **#5** 3 controls unsatisfiable (QMS_002, ROBUST_002, ROBUST_003 need a DOCUMENT at min_score 50 but max DOCUMENT trust is 40).
 
 ### Deferred by explicit decision (do NOT build pre-pilot without a user/lawyer forcing it)
-Risk classifier (risk_tier is manual input for now), governance ledger events, sub-controls, weighted scoring, legal-approval workflow, ISO 42001 / second framework, freshness WARNING band, refresh tokens, evidence timeline UI.
+Risk classifier (risk_tier manual), governance ledger events, sub-controls, weighted scoring, legal-approval workflow, ISO 42001 / second framework, freshness WARNING band, refresh tokens, evidence timeline UI. **Supabase** (auth/db/RLS) — evaluated & declined: its client→DB/PostgREST model conflicts with the audited service-layer invariants; only worth it later as plain hosted Postgres (swap `DATABASE_URL`).
 
 ### Known non-blocking follow-ups
-`HTTP_422_UNPROCESSABLE_ENTITY` → `_CONTENT` rename; prod `JWT_SECRET` must be ≥32 bytes; orphaned Docker volume `company-3_comply_pgdata` from an early folder rename.
+`HTTP_422_UNPROCESSABLE_ENTITY` → `_CONTENT` rename; prod `JWT_SECRET` must be ≥32 bytes; orphaned Docker volume `company-3_comply_pgdata`. **Env note:** this dev box reaps background processes & Docker Desktop when idle — backend/ml-service/Postgres often need restarting at the start of a session.
