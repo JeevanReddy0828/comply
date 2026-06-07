@@ -19,6 +19,38 @@ export interface GuardVerdict {
   reasons: GuardReason[];
 }
 
+export interface RagSource {
+  citation: string;
+  source: string;
+  score: number;
+  text: string;
+}
+
+export interface RagResponse {
+  mode: "generated" | "retrieval";
+  answer: string | null;
+  sources: RagSource[];
+  note?: string | null;
+}
+
+export async function ragQuery(question: string): Promise<RagResponse> {
+  let res: Response;
+  try {
+    res = await fetch(`${ML_URL}/rag/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question }),
+    });
+  } catch {
+    throw new Error(`Could not reach the ML service at ${ML_URL}. Is it running?`);
+  }
+  if (!res.ok) {
+    if (res.status === 503) throw new Error("The knowledge index isn't built yet. Run the RAG ingest.");
+    throw new Error(`Query failed (${res.status})`);
+  }
+  return (await res.json()) as RagResponse;
+}
+
 export async function guardCheck(text: string): Promise<GuardVerdict> {
   let res: Response;
   try {

@@ -15,6 +15,9 @@ export function Layout() {
           <Link to="/guard" className="muted">
             Guard
           </Link>
+          <Link to="/ask" className="muted">
+            Ask
+          </Link>
         </div>
         <div className="header-right">
           {user && (
