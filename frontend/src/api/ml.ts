@@ -26,17 +26,22 @@ export interface RagSource {
   text: string;
 }
 
-export interface RagResponse {
-  mode: "generated" | "retrieval";
-  answer: string | null;
-  sources: RagSource[];
-  note?: string | null;
-}
+export type RagStreamEvent =
+  | { type: "sources"; sources: RagSource[] }
+  | { type: "reasoning"; delta: string }
+  | { type: "answer"; delta: string }
+  | { type: "done"; mode?: "generated" | "retrieval" }
+  | { type: "error"; message: string };
 
-export async function ragQuery(question: string): Promise<RagResponse> {
+// Streams the RAG response as Server-Sent Events: sources first, then reasoning
+// and answer deltas. Invokes onEvent for each parsed event.
+export async function ragQueryStream(
+  question: string,
+  onEvent: (e: RagStreamEvent) => void,
+): Promise<void> {
   let res: Response;
   try {
-    res = await fetch(`${ML_URL}/rag/query`, {
+    res = await fetch(`${ML_URL}/rag/query/stream`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question }),
@@ -44,11 +49,28 @@ export async function ragQuery(question: string): Promise<RagResponse> {
   } catch {
     throw new Error(`Could not reach the ML service at ${ML_URL}. Is it running?`);
   }
-  if (!res.ok) {
+  if (!res.ok || !res.body) {
     if (res.status === 503) throw new Error("The knowledge index isn't built yet. Run the RAG ingest.");
     throw new Error(`Query failed (${res.status})`);
   }
-  return (await res.json()) as RagResponse;
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let sep: number;
+    while ((sep = buffer.indexOf("\n\n")) >= 0) {
+      const frame = buffer.slice(0, sep);
+      buffer = buffer.slice(sep + 2);
+      const line = frame.split("\n").find((l) => l.startsWith("data:"));
+      if (!line) continue;
+      const payload = line.slice(5).trim();
+      if (payload) onEvent(JSON.parse(payload) as RagStreamEvent);
+    }
+  }
 }
 
 export async function guardCheck(text: string): Promise<GuardVerdict> {

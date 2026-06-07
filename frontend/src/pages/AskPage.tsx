@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { ragQuery } from "../api/ml";
-import type { RagResponse } from "../api/ml";
+import { ragQueryStream } from "../api/ml";
+import type { RagSource } from "../api/ml";
 
 const EXAMPLES = [
   "What are the human oversight obligations for high-risk AI systems?",
@@ -10,25 +10,41 @@ const EXAMPLES = [
 
 export function AskPage() {
   const [question, setQuestion] = useState("");
-  const [result, setResult] = useState<RagResponse | null>(null);
+  const [sources, setSources] = useState<RagSource[]>([]);
+  const [reasoning, setReasoning] = useState("");
+  const [answerText, setAnswerText] = useState("");
+  const [mode, setMode] = useState<"generated" | "retrieval" | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [asked, setAsked] = useState(false);
 
   async function ask(q: string) {
     const query = q.trim();
     if (!query) return;
     setQuestion(query);
     setError(null);
-    setResult(null);
+    setSources([]);
+    setReasoning("");
+    setAnswerText("");
+    setMode(null);
+    setAsked(true);
     setLoading(true);
     try {
-      setResult(await ragQuery(query));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Query failed.");
+      await ragQueryStream(query, (e) => {
+        if (e.type === "sources") setSources(e.sources);
+        else if (e.type === "reasoning") setReasoning((r) => r + e.delta);
+        else if (e.type === "answer") setAnswerText((a) => a + e.delta);
+        else if (e.type === "error") setError(e.message);
+        else if (e.type === "done") setMode(e.mode ?? null);
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Query failed.");
     } finally {
       setLoading(false);
     }
   }
+
+  const thinking = loading && !answerText;
 
   return (
     <div className="container narrow">
@@ -36,8 +52,8 @@ export function AskPage() {
         <div>
           <h1>Ask the Act</h1>
           <p className="sub muted">
-            Ask questions about the EU AI Act and your control catalog. Answers are grounded in the
-            regulation text and cite their sources.
+            Ask questions about the EU AI Act and your control catalog. Answers stream in, grounded in
+            the regulation text, and cite their sources.
           </p>
         </div>
       </div>
@@ -62,46 +78,67 @@ export function AskPage() {
             ))}
           </div>
           <button className="primary" onClick={() => ask(question)} disabled={loading || !question.trim()}>
-            {loading ? "Searching…" : "Ask"}
+            {loading ? "Asking…" : "Ask"}
           </button>
         </div>
         {error && <p className="error-text">{error}</p>}
       </div>
 
-      {result && (
+      {asked && (
         <div className="card auth-card stack" style={{ marginTop: "1rem" }}>
-          {result.mode === "generated" && result.answer ? (
-            <div>
-              <label>Answer</label>
-              <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>{result.answer}</p>
-            </div>
-          ) : (
-            <div className="notice info" style={{ margin: 0 }}>
-              {result.note ??
-                "Generated answers are off — showing the most relevant passages from the Act and catalog."}
-            </div>
+          {reasoning && (
+            <details>
+              <summary className="subtle" style={{ cursor: "pointer", fontSize: "0.85rem" }}>
+                Model reasoning
+              </summary>
+              <p className="muted" style={{ whiteSpace: "pre-wrap", fontSize: "0.85rem", marginTop: "0.5rem" }}>
+                {reasoning}
+              </p>
+            </details>
           )}
 
-          <div>
-            <label>Sources</label>
-            <div className="stack" style={{ gap: "0.6rem" }}>
-              {result.sources.map((s, i) => (
-                <div key={i} className="card" style={{ padding: "0.7rem 0.9rem" }}>
-                  <div className="spread" style={{ marginBottom: "0.3rem" }}>
-                    <span style={{ fontWeight: 600 }}>
-                      [{i + 1}] {s.citation}
-                    </span>
-                    <span className="badge neutral">
-                      {s.source === "eu_ai_act" ? "EU AI Act" : "Catalog"}
-                    </span>
-                  </div>
-                  <div className="muted" style={{ fontSize: "0.88rem" }}>
-                    {s.text.length > 320 ? s.text.slice(0, 320).trim() + "…" : s.text}
-                  </div>
-                </div>
-              ))}
+          {answerText ? (
+            <div>
+              <label>Answer</label>
+              <p style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+                {answerText}
+                {loading && <span className="subtle"> ▍</span>}
+              </p>
             </div>
-          </div>
+          ) : thinking ? (
+            <div className="muted" style={{ fontSize: "0.9rem" }}>
+              {reasoning ? "Reasoning…" : "Retrieving and thinking…"}
+            </div>
+          ) : (
+            mode === "retrieval" && (
+              <div className="notice info" style={{ margin: 0 }}>
+                Generated answers are off — showing the most relevant passages from the Act and catalog.
+              </div>
+            )
+          )}
+
+          {sources.length > 0 && (
+            <div>
+              <label>Sources</label>
+              <div className="stack" style={{ gap: "0.6rem" }}>
+                {sources.map((s, i) => (
+                  <div key={i} className="card" style={{ padding: "0.7rem 0.9rem" }}>
+                    <div className="spread" style={{ marginBottom: "0.3rem" }}>
+                      <span style={{ fontWeight: 600 }}>
+                        [{i + 1}] {s.citation}
+                      </span>
+                      <span className="badge neutral">
+                        {s.source === "eu_ai_act" ? "EU AI Act" : "Catalog"}
+                      </span>
+                    </div>
+                    <div className="muted" style={{ fontSize: "0.88rem" }}>
+                      {s.text.length > 320 ? s.text.slice(0, 320).trim() + "…" : s.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
