@@ -79,7 +79,7 @@ export function GuardPage() {
   }
 
   return (
-    <div className="container narrow">
+    <div className="container wide">
       <div className="page-head">
         <div>
           <h1>Guard</h1>
