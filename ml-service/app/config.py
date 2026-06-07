@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # RAG
     anthropic_api_key: str = ""
-    rag_answer_model: str = "claude-sonnet-4-5"
+    rag_answer_model: str = "claude-sonnet-4-6"
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     catalog_dir: str = "../compliance"
     act_text_path: str = "data/eu_ai_act.txt"
