@@ -8,9 +8,17 @@ export function Layout() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <Link to="/" className="brand">
-          Comply
-        </Link>
+        <div className="row" style={{ gap: "1.25rem" }}>
+          <Link to="/" className="brand">
+            Comply
+          </Link>
+          <Link to="/guard" className="muted">
+            Guard
+          </Link>
+          <Link to="/ask" className="muted">
+            Ask
+          </Link>
+        </div>
         <div className="header-right">
           {user && (
             <>

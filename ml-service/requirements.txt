@@ -1,0 +1,21 @@
+# ml-service — isolated ML subsystem (Guard + RAG). Kept separate from the core
+# backend so the assessment engine stays deterministic and ML-free.
+# Version floors, not exact pins (per project convention).
+
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.7
+pydantic-settings>=2.3
+httpx>=0.27
+
+# Guard (Phase 1): prompt-injection classifier
+torch>=2.2
+transformers>=4.44
+sentencepiece>=0.2  # DeBERTa-v3 tokenizer
+
+# RAG (Phases 3-5): local retrieval + hosted generation
+sentence-transformers>=3.0
+faiss-cpu>=1.8
+numpy>=1.26
+pyyaml>=6.0
+openai>=1.40  # OpenAI-compatible client for the NVIDIA NIM answer endpoint

@@ -7,6 +7,8 @@ import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { RegisterSystemPage } from "./pages/RegisterSystemPage";
 import { SystemDetailPage } from "./pages/SystemDetailPage";
+import { GuardPage } from "./pages/GuardPage";
+import { AskPage } from "./pages/AskPage";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -33,6 +35,8 @@ export default function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/systems/new" element={<RegisterSystemPage />} />
             <Route path="/systems/:id" element={<SystemDetailPage />} />
+            <Route path="/guard" element={<GuardPage />} />
+            <Route path="/ask" element={<AskPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
