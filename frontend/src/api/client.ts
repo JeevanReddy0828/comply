@@ -8,8 +8,12 @@ import type {
   ControlSummary,
   Evidence,
   EvidenceCreate,
+  RemediationTask,
   SystemCreate,
+  TaskCreate,
+  TaskUpdate,
   TokenResponse,
+  User,
 } from "./types";
 
 const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "http://localhost:8000";
@@ -108,4 +112,12 @@ export const api = {
 
   // catalog
   listControls: () => request<ControlSummary[]>("/catalog/controls"),
+
+  // remediation
+  listUsers: () => request<User[]>("/auth/users"),
+  listTasks: (systemId: string) => request<RemediationTask[]>(`/systems/${systemId}/tasks`),
+  createTask: (systemId: string, body: TaskCreate) =>
+    request<RemediationTask>(`/systems/${systemId}/tasks`, { method: "POST", body: JSON.stringify(body) }),
+  updateTask: (taskId: string, body: TaskUpdate) =>
+    request<RemediationTask>(`/tasks/${taskId}`, { method: "PATCH", body: JSON.stringify(body) }),
 };

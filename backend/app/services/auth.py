@@ -20,6 +20,7 @@ CAN_INGEST_EVIDENCE = "can_ingest_evidence"
 CAN_RUN_ASSESSMENT = "can_run_assessment"
 CAN_VIEW_COMPLIANCE = "can_view_compliance"
 CAN_APPROVE_CONTROLS = "can_approve_controls"
+CAN_MANAGE_REMEDIATION = "can_manage_remediation"
 
 ALL_CAPABILITIES = [
     CAN_MANAGE_USERS,
@@ -28,6 +29,7 @@ ALL_CAPABILITIES = [
     CAN_RUN_ASSESSMENT,
     CAN_VIEW_COMPLIANCE,
     CAN_APPROVE_CONTROLS,
+    CAN_MANAGE_REMEDIATION,
 ]
 
 ROLE_CAPABILITIES: dict[str, list[str]] = {
@@ -38,9 +40,20 @@ ROLE_CAPABILITIES: dict[str, list[str]] = {
         CAN_RUN_ASSESSMENT,
         CAN_VIEW_COMPLIANCE,
         CAN_APPROVE_CONTROLS,
+        CAN_MANAGE_REMEDIATION,
     ],
     "ReadOnly": [CAN_VIEW_COMPLIANCE],
 }
+
+
+def list_org_users(db: Session, org_id: str) -> list[User]:
+    """All active users in an org — used to populate the task-owner picker."""
+    return (
+        db.query(User)
+        .filter(User.org_id == org_id, User.is_active.is_(True))
+        .order_by(User.name, User.email)
+        .all()
+    )
 
 
 def capabilities_for_role(role: str) -> list[str]:

@@ -56,7 +56,7 @@ def clean(db):
     db.execute(
         text(
             "TRUNCATE audit_events, evidence_items, assessment_results, assessments, "
-            "ai_systems, users, organizations, control_requirements, "
+            "remediation_tasks, ai_systems, users, organizations, control_requirements, "
             "evidence_requirements, controls, requirements, frameworks "
             "RESTART IDENTITY CASCADE;"
         )

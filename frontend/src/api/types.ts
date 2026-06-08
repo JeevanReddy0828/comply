@@ -154,6 +154,40 @@ export interface AnnexIVReport {
   sections: ReportSection[];
 }
 
+export type TaskStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED";
+
+export interface RemediationTask {
+  id: string;
+  org_id: string;
+  system_id: string;
+  control_id: string;
+  status: TaskStatus;
+  owner_id: string | null;
+  due_date: string | null;
+  notes: string;
+  source_gap_reason: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  resolved_at: string | null;
+  resolved_by: string | null;
+  resolution: "MANUAL" | "AUTO_SATISFIED" | null;
+}
+
+export interface TaskCreate {
+  control_id: string;
+  owner_id?: string | null;
+  due_date?: string | null;
+  notes?: string;
+}
+
+export interface TaskUpdate {
+  status?: TaskStatus;
+  owner_id?: string | null;
+  due_date?: string | null;
+  notes?: string | null;
+}
+
 export interface ControlSummary {
   control_id: string;
   version: number;

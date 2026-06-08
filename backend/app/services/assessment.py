@@ -32,6 +32,7 @@ from app.models import (
     Framework,
     Requirement,
 )
+from app.services import remediation
 from app.services.audit import append_event
 from app.services.evidence_registry import category_for
 from app.services.tenancy import scoped_get
@@ -206,6 +207,12 @@ def run_assessment(db: Session, *, org_id: str, system_id: str, actor_id: str) -
             entity_type=ENTITY_ASSESSMENT,
             entity_id=assessment.id,
             payload={"system_id": system_id, "controls": len(evals), "catalog_version": catalog_version},
+        )
+        # Close any open remediation tasks whose control is now satisfied — atomic
+        # with the run, each emitting its own TASK_RESOLVED (AUTO_SATISFIED) event.
+        satisfied = {r["control_id"] for r in evals if r["status"] == "SATISFIED"}
+        remediation.auto_resolve_for_assessment(
+            db, org_id=org_id, system_id=system_id, satisfied_control_ids=satisfied, actor="system"
         )
         db.commit()
     except Exception:

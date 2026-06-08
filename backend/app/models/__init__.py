@@ -10,6 +10,7 @@ from app.models.evidence import EvidenceItem
 from app.models.assessment import Assessment, AssessmentResult
 from app.models.audit import AuditEvent
 from app.models.auth import User
+from app.models.remediation import RemediationTask
 
 __all__ = [
     "Framework",
@@ -24,4 +25,5 @@ __all__ = [
     "AssessmentResult",
     "AuditEvent",
     "User",
+    "RemediationTask",
 ]

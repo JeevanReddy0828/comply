@@ -13,7 +13,13 @@ EVIDENCE_SUPERSEDED = "EVIDENCE_SUPERSEDED"
 # Assessment (Step 8)
 ASSESSMENT_RUN = "ASSESSMENT_RUN"
 
+# Remediation tasks
+TASK_CREATED = "TASK_CREATED"
+TASK_UPDATED = "TASK_UPDATED"
+TASK_RESOLVED = "TASK_RESOLVED"
+
 # Entity types
 ENTITY_AI_SYSTEM = "ai_system"
 ENTITY_EVIDENCE = "evidence_item"
 ENTITY_ASSESSMENT = "assessment"
+ENTITY_TASK = "remediation_task"

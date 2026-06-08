@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api, ApiError } from "../api/client";
-import type { AISystem, Compliance, ControlResult } from "../api/types";
+import type {
+  AISystem,
+  Compliance,
+  ControlResult,
+  RemediationTask,
+  TaskUpdate,
+  User,
+} from "../api/types";
 import { useCatalog } from "../catalog/CatalogContext";
 import { StatusBadge } from "../components/StatusBadge";
 import { AddEvidenceModal } from "../components/AddEvidenceModal";
+import { RemediationBlock } from "../components/RemediationBlock";
 import { remediationFor } from "../lib/remediation";
 
 interface EvidenceTarget {
@@ -24,6 +32,16 @@ export function SystemDetailPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [evidenceTarget, setEvidenceTarget] = useState<EvidenceTarget | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
+  const [tasks, setTasks] = useState<RemediationTask[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  const refreshTasks = useCallback(async () => {
+    try {
+      setTasks(await api.listTasks(id));
+    } catch {
+      /* tasks are non-critical to the page; ignore transient failures */
+    }
+  }, [id]);
 
   useEffect(() => {
     api
@@ -40,7 +58,40 @@ export function SystemDetailPage() {
         if (err instanceof ApiError && err.status === 404) setNeverRun(true);
         else setError(err instanceof ApiError ? err.message : "Failed to load compliance.");
       });
+    api.listTasks(id).then(setTasks).catch(() => setTasks([]));
+    api.listUsers().then(setUsers).catch(() => setUsers([]));
   }, [id]);
+
+  const openTaskFor = useCallback(
+    (controlId: string) => tasks.find((t) => t.control_id === controlId && t.status !== "RESOLVED"),
+    [tasks],
+  );
+
+  const createTask = useCallback(
+    async (controlId: string, ownerId: string | null, dueDate: string | null) => {
+      setError(null);
+      try {
+        await api.createTask(id, { control_id: controlId, owner_id: ownerId, due_date: dueDate });
+        await refreshTasks();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : "Failed to create task.");
+      }
+    },
+    [id, refreshTasks],
+  );
+
+  const updateTask = useCallback(
+    async (taskId: string, patch: TaskUpdate) => {
+      setError(null);
+      try {
+        await api.updateTask(taskId, patch);
+        await refreshTasks();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : "Failed to update task.");
+      }
+    },
+    [refreshTasks],
+  );
 
   const runAssessment = useCallback(async () => {
     setRunning(true);
@@ -49,12 +100,13 @@ export function SystemDetailPage() {
       const c = await api.runAssessment(id);
       setCompliance(c);
       setNeverRun(false);
+      await refreshTasks();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to run assessment.");
     } finally {
       setRunning(false);
     }
-  }, [id]);
+  }, [id, refreshTasks]);
 
   // After adding evidence: close modal, re-run, and highlight the result.
   // Evidence is already saved by the time this runs, so if the re-assessment
@@ -73,6 +125,7 @@ export function SystemDetailPage() {
           setFlash(`${controlId}: ${before} → ${after}`);
           setTimeout(() => setFlash(null), 5000);
         }
+        await refreshTasks();
       } catch (err) {
         setError(
           err instanceof ApiError
@@ -81,7 +134,7 @@ export function SystemDetailPage() {
         );
       }
     },
-    [compliance, id],
+    [compliance, id, refreshTasks],
   );
 
   if (error) return <div className="container"><p className="error-text">{error}</p></div>;
@@ -156,6 +209,10 @@ export function SystemDetailPage() {
               <div className="k">Missing</div>
               <div className="v bad">{compliance.counts.MISSING}</div>
             </div>
+            <div className="card">
+              <div className="k">Open tasks</div>
+              <div className="v">{tasks.filter((t) => t.status !== "RESOLVED").length}</div>
+            </div>
           </div>
 
           <div className="card">
@@ -180,6 +237,10 @@ export function SystemDetailPage() {
                     onAddEvidence={(field, category) =>
                       setEvidenceTarget({ controlId: r.control_id, field, category })
                     }
+                    task={openTaskFor(r.control_id)}
+                    users={users}
+                    onCreateTask={createTask}
+                    onUpdateTask={updateTask}
                   />
                 ))}
               </tbody>
@@ -208,12 +269,20 @@ function ControlRow({
   open,
   onToggle,
   onAddEvidence,
+  task,
+  users,
+  onCreateTask,
+  onUpdateTask,
 }: {
   result: ControlResult;
   name: string;
   open: boolean;
   onToggle: () => void;
   onAddEvidence: (field: string, category: string) => void;
+  task: RemediationTask | undefined;
+  users: User[];
+  onCreateTask: (controlId: string, ownerId: string | null, dueDate: string | null) => void;
+  onUpdateTask: (taskId: string, patch: TaskUpdate) => void;
 }) {
   return (
     <>
@@ -254,6 +323,13 @@ function ControlRow({
                     </div>
                   );
                 })}
+                <RemediationBlock
+                  controlId={result.control_id}
+                  task={task}
+                  users={users}
+                  onCreate={onCreateTask}
+                  onUpdate={onUpdateTask}
+                />
               </div>
             )}
           </td>

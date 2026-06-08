@@ -100,7 +100,7 @@
 .system-row .meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
 
 /* summary cards */
-.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
 .summary .card { padding: 1.1rem 1.25rem; }
 .summary .k { font-size: 0.8rem; color: var(--text-muted); }
 .summary .v { font-size: 1.6rem; font-weight: 700; margin-top: 0.25rem; }
@@ -207,6 +207,33 @@
 @media (max-width: 700px) {
   .report-meta dl { grid-template-columns: 1fr; }
 }
+
+/* Remediation tasks — inline ownership/lifecycle inside a control's gap */
+button.secondary {
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+button.secondary:hover:not(:disabled) { border-color: var(--accent); }
+
+.task-block {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.task-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.task-title { font-weight: 600; font-size: 0.9rem; }
+.task-fields { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; }
+.task-fields label { font-size: 0.78rem; color: var(--text-muted); }
+.task-fields select, .task-fields input { margin-top: 0.2rem; }
+.task-fields .primary { align-self: end; }
+.task-meta { margin-top: 0.5rem; font-size: 0.78rem; }
+
+.badge.task-open { color: var(--warn); background: var(--warn-soft); }
+.badge.task-in_progress { color: var(--accent); background: var(--accent-soft); }
+.badge.task-resolved { color: var(--ok); background: var(--ok-soft); }
 
 @media print {
   .app-header, .no-print, .report-toolbar { display: none !important; }
