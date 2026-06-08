@@ -104,9 +104,16 @@ export function SystemDetailPage() {
             {system.deployment_context ? ` · ${system.deployment_context}` : ""}
           </p>
         </div>
-        <button className="primary" onClick={runAssessment} disabled={running}>
-          {running ? "Assessing…" : neverRun ? "Run assessment" : "Re-run assessment"}
-        </button>
+        <div className="row" style={{ gap: "0.75rem" }}>
+          {!neverRun && compliance?.applicability === "APPLICABLE" && (
+            <Link to={`/systems/${id}/report`} className="button-link">
+              Annex IV report
+            </Link>
+          )}
+          <button className="primary" onClick={runAssessment} disabled={running}>
+            {running ? "Assessing…" : neverRun ? "Run assessment" : "Re-run assessment"}
+          </button>
+        </div>
       </div>
 
       {flash && <div className="notice toast-ok" style={{ marginBottom: "1rem" }}>✓ {flash}</div>}

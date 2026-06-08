@@ -156,6 +156,7 @@ def evaluate(db: Session, system: AISystem, as_of: datetime) -> list[dict]:
                 "score": score,
                 "freshness_grade": grade,
                 "evidence_count": len(qualifying_ids),
+                "evidence_ids": sorted(qualifying_ids),
                 "missing_requirements": sorted(missing, key=lambda m: m["field"]),
                 "warnings": sorted(warnings, key=lambda w: w["field"]),
             }

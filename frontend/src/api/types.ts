@@ -100,6 +100,60 @@ export interface Compliance {
   results: ControlResult[];
 }
 
+export interface ReportEvidence {
+  id: string;
+  field: string;
+  evidence_type: string;
+  source: string;
+  trust_score: number;
+  captured_at: string;
+  hash: string;
+}
+
+export interface ReportControl {
+  control_id: string;
+  control_version: number;
+  control_hash: string | null;
+  name: string;
+  status: ControlStatus;
+  score: number;
+  review_status: string;
+  confidence: string;
+  missing_requirements: MissingRequirement[];
+  evidence: ReportEvidence[];
+}
+
+export interface ReportSection {
+  section: number;
+  title: string;
+  content_source: string | null;
+  fields: string[];
+  controls: ReportControl[];
+}
+
+export interface ReportSystem {
+  id: string;
+  name: string;
+  intended_purpose: string;
+  deployment_context: string;
+  risk_tier: string | null;
+  annex_iii_category: string | null;
+}
+
+export interface AnnexIVReport {
+  system: ReportSystem;
+  applicability: "APPLICABLE" | "NOT_APPLICABLE";
+  assessment_id: string;
+  assessment_timestamp: string;
+  catalog_version: string;
+  generated_at: string;
+  system_score: number | null;
+  counts: { SATISFIED: number; PARTIAL: number; MISSING: number };
+  watermark: string; // DRAFT | LEGAL_APPROVED
+  note: string | null;
+  sections: ReportSection[];
+}
+
 export interface ControlSummary {
   control_id: string;
   version: number;

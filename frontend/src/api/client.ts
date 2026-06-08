@@ -3,6 +3,7 @@
 
 import type {
   AISystem,
+  AnnexIVReport,
   Compliance,
   ControlSummary,
   Evidence,
@@ -98,6 +99,7 @@ export const api = {
   runAssessment: (systemId: string) =>
     request<Compliance>(`/assessments/run/${systemId}`, { method: "POST" }),
   getCompliance: (systemId: string) => request<Compliance>(`/systems/${systemId}/compliance`),
+  getReport: (systemId: string) => request<AnnexIVReport>(`/systems/${systemId}/report`),
 
   // evidence
   listEvidence: (systemId: string) => request<Evidence[]>(`/systems/${systemId}/evidence`),

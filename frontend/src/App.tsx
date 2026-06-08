@@ -7,6 +7,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { RegisterSystemPage } from "./pages/RegisterSystemPage";
 import { SystemDetailPage } from "./pages/SystemDetailPage";
+import { ReportPage } from "./pages/ReportPage";
 import { GuardPage } from "./pages/GuardPage";
 import { AskPage } from "./pages/AskPage";
 
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/systems/new" element={<RegisterSystemPage />} />
             <Route path="/systems/:id" element={<SystemDetailPage />} />
+            <Route path="/systems/:id/report" element={<ReportPage />} />
             <Route path="/guard" element={<GuardPage />} />
             <Route path="/ask" element={<AskPage />} />
           </Route>
