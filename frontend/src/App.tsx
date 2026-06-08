@@ -10,6 +10,7 @@ import { SystemDetailPage } from "./pages/SystemDetailPage";
 import { ReportPage } from "./pages/ReportPage";
 import { GuardPage } from "./pages/GuardPage";
 import { AskPage } from "./pages/AskPage";
+import { ProfilePage } from "./pages/ProfilePage";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/systems/:id/report" element={<ReportPage />} />
             <Route path="/guard" element={<GuardPage />} />
             <Route path="/ask" element={<AskPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

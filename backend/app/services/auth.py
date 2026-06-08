@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timedelta, timezone
 
 import jwt
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -53,6 +54,18 @@ def list_org_users(db: Session, org_id: str) -> list[User]:
         .filter(User.org_id == org_id, User.is_active.is_(True))
         .order_by(User.name, User.email)
         .all()
+    )
+
+
+def get_organization(db: Session, org_id: str) -> Organization | None:
+    return db.get(Organization, org_id)
+
+
+def count_org_members(db: Session, org_id: str) -> int:
+    return (
+        db.query(func.count(User.id))
+        .filter(User.org_id == org_id, User.is_active.is_(True))
+        .scalar()
     )
 
 

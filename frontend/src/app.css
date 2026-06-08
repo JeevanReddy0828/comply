@@ -244,3 +244,18 @@ button.secondary:hover:not(:disabled) { border-color: var(--accent); }
   .report-watermark { color: rgba(192, 57, 43, 0.12); }
   a { color: var(--text); }
 }
+
+/* Profile */
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.profile-card h2 { font-size: 1.05rem; margin-bottom: 0.9rem; }
+.kv { display: grid; gap: 0.6rem; margin: 0; }
+.kv dt { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-subtle); }
+.kv dd { margin: 0.1rem 0 0; font-size: 0.95rem; color: var(--text); }
+.caps { margin-top: 1rem; }
+.caps-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-subtle); margin-bottom: 0.4rem; }
+.cap-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.cap-chip { font-size: 0.78rem; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-hover); }
+
+@media (max-width: 700px) {
+  .profile-grid { grid-template-columns: 1fr; }
+}

@@ -3,12 +3,14 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import User
-from app.schemas.auth import LoginRequest, RegisterRequest, TokenOut, UserOut
+from app.schemas.auth import LoginRequest, OrganizationOut, RegisterRequest, TokenOut, UserOut
 from app.security import get_current_user, require_capability
 from app.services.auth import (
     CAN_VIEW_COMPLIANCE,
     authenticate,
+    count_org_members,
     create_access_token,
+    get_organization,
     list_org_users,
     register_org_and_admin,
 )
@@ -48,3 +50,20 @@ def list_users(
 ):
     """Org-scoped user list for the remediation owner picker."""
     return [UserOut.model_validate(u) for u in list_org_users(db, user.org_id)]
+
+
+@router.get("/organization", response_model=OrganizationOut)
+def organization(
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    """The current user's organization (profile page)."""
+    org = get_organization(db, user.org_id)
+    if org is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found")
+    return OrganizationOut(
+        id=org.id,
+        name=org.name,
+        created_at=org.created_at,
+        member_count=count_org_members(db, user.org_id),
+    )

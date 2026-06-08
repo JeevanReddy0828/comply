@@ -15,6 +15,13 @@ export interface TokenResponse {
   user: User;
 }
 
+export interface Organization {
+  id: string;
+  name: string;
+  created_at: string;
+  member_count: number;
+}
+
 export interface AISystem {
   id: string;
   org_id: string;

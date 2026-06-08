@@ -94,6 +94,18 @@ def test_disabled_user_blocked(clean, db):
     ).status_code == 401
 
 
+def test_organization_profile(clean):
+    client = _client()
+    token = _register(client, org="Acme HR").json()["access_token"]
+    r = client.get("/auth/organization", headers={"Authorization": f"Bearer {token}"})
+    assert r.status_code == 200
+    body = r.json()
+    assert body["name"] == "Acme HR"
+    assert body["member_count"] == 1          # just the registering admin
+    assert body["created_at"]
+    assert client.get("/auth/organization").status_code == 401  # auth required
+
+
 # ── Capability authorization ──────────────────────────────────────────────────
 def _probe_app() -> FastAPI:
     app = FastAPI()

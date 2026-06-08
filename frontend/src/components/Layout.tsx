@@ -22,7 +22,9 @@ export function Layout() {
         <div className="header-right">
           {user && (
             <>
-              <span className="subtle">{user.email}</span>
+              <Link to="/profile" className="subtle">
+                {user.email}
+              </Link>
               <button
                 className="link"
                 onClick={() => {

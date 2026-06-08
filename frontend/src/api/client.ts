@@ -8,6 +8,7 @@ import type {
   ControlSummary,
   Evidence,
   EvidenceCreate,
+  Organization,
   RemediationTask,
   SystemCreate,
   TaskCreate,
@@ -92,6 +93,7 @@ export const api = {
   login: (body: { email: string; password: string }) =>
     request<TokenResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
   me: () => request<TokenResponse["user"]>("/auth/me"),
+  getOrganization: () => request<Organization>("/auth/organization"),
 
   // systems
   listSystems: () => request<AISystem[]>("/systems"),
