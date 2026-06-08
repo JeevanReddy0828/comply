@@ -76,6 +76,33 @@ def test_control_requirements_linked(clean_graph):
     assert {l.requirement_id for l in links} == {"TRACEABILITY"}
 
 
+def test_backfills_null_control_hash_on_reload(clean_graph):
+    db = clean_graph
+    load_catalog(db, CATALOG)
+    db.commit()
+
+    # Simulate rows inserted before migration 0006 added control_hash.
+    from sqlalchemy import update
+
+    db.execute(update(Control).values(control_hash=None))
+    db.commit()
+    assert db.query(func.count()).select_from(Control).filter(Control.control_hash.is_(None)).scalar() == 30
+
+    summary = load_catalog(db, CATALOG)
+    db.commit()
+
+    assert summary["controls_rehashed"] == 30          # content unchanged, hash backfilled
+    assert summary["controls_inserted"] == 0
+    assert summary["controls_skipped"] == 0
+    assert db.query(func.count()).select_from(Control).filter(Control.control_hash.is_(None)).scalar() == 0
+
+    # Idempotent: a subsequent reload now finds the hash set and plain-skips.
+    again = load_catalog(db, CATALOG)
+    db.commit()
+    assert again["controls_rehashed"] == 0
+    assert again["controls_skipped"] == 30
+
+
 def test_drift_without_version_bump_raises(clean_graph):
     db = clean_graph
     load_catalog(db, CATALOG)

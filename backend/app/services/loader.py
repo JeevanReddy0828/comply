@@ -166,6 +166,12 @@ def _load_control(db: Session, data: dict, catalog_version: str) -> str:
                 f"{cid} v{ver} content changed without a version bump "
                 f"(review_methodology requires version bump on content change)"
             )
+        # Backfill the content hash for rows inserted before control_hash existed
+        # (migration 0006). Content is unchanged — only the NULL hash is populated,
+        # never the version. Idempotent: a subsequent load finds it set and skips.
+        if existing.control_hash is None:
+            existing.control_hash = _content_hash(data, ev_reqs, req_ids)
+            return "rehashed"
         return "skipped"
 
     for current in db.query(Control).filter(Control.control_id == cid, Control.is_current.is_(True)).all():
@@ -202,7 +208,7 @@ def load_catalog(db: Session, catalog_dir: str | Path) -> dict:
     catalog_version = manifest["catalog_version"]
 
     summary = {"catalog_version": catalog_version, "frameworks": 0, "requirements": 0,
-               "controls_inserted": 0, "controls_skipped": 0}
+               "controls_inserted": 0, "controls_skipped": 0, "controls_rehashed": 0}
 
     for fw_file in sorted((root / "frameworks").glob("*.yaml")):
         fw_data = _read_yaml(fw_file)
