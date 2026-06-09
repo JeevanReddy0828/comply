@@ -24,7 +24,7 @@ def ingest(
     except svc.SystemNotFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="System not found")
     except (svc.UnknownEvidenceType, svc.InvalidCapturedAt, svc.InvalidSupersedes) as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e))
     return EvidenceOut.model_validate(item)
 
 

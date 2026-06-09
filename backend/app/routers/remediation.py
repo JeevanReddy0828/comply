@@ -23,9 +23,9 @@ def create_task(
     except svc.SystemNotFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="System not found")
     except svc.UnknownControl as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e))
     except svc.OwnerNotFound as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e))
     except svc.DuplicateOpenTask as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
     return TaskOut.model_validate(task)
@@ -64,7 +64,7 @@ def update_task(
     except svc.TaskNotFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
     except svc.OwnerNotFound as e:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(e))
     except svc.DuplicateOpenTask as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
     return TaskOut.model_validate(task)
