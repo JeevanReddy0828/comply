@@ -26,13 +26,18 @@ The locked invariants live in CLAUDE.md; this captures the *why* behind changes.
 ## 2026-06-08 — Profile page
 - `GET /auth/organization` returns the current user's org (name, created_at, member_count); auth-only, no special capability. Profile page is read-only (no edit/password change yet).
 
+## 2026-06-08 — Ask → Control linking (framework-level)
+- `GET /catalog/articles`: EU AI Act article → feeding controls, from the **article-level** `control_article_map.yaml` (NOT per-control `article_refs`, which are sub-article like `Art.14(1)`). Resolves to current controls, ordered by article number.
+- Ask page detects article references (`/\bart(?:icle)?\.?\s*(\d+)/i`) in the question + answer + source citations, then renders the affected controls with review_status. The control linking is a catalog/DB concern, decoupled from the RAG/ML service.
+- **Shipped framework-level only.** The system-aware overlay (a system picker → that system's gap status + open tasks + create-task action) is the next slice and needs the system-context decision.
+
 ## Release / process
 - Shipped as 4 commits on `main`: reporting → catalog backfill → remediation → profile.
 - Features built sequentially in one tree share files (`assessment.py`, frontend `api/*`, `SystemDetailPage.tsx`, `app.css`); when splitting commits, snapshot to a tag and verify `HEAD == snapshot` before merging.
 - Branch hygiene: delete local+remote feature branches once fully merged with no planned follow-up.
 
 ## Deferred (do NOT build without a user/lawyer forcing it)
-- **Next highest-ROI:** Ask → Control → Gap → Task linking (turn Ask-the-Act into a workflow entry point).
+- **Next highest-ROI:** Ask → Control linking shipped (framework-level); the **system-aware overlay** (gap status + tasks for a selected system, with create-task action) is the next slice — needs the system-context decision.
 - Task observability metrics (created/resolved/auto-resolved %/avg resolution time) — cheap now that every transition is an audit event.
 - Evidence-as-documents = an architectural fork, not a feature: extend `EvidenceItem` with a content-hashed blob pointer for DOCUMENT-category evidence; do NOT build a separate document vault.
 - Compliance Workspace page, profile editing, external integrations — wait for user pull.
