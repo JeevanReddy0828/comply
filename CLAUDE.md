@@ -105,8 +105,8 @@ compliance/         Version-controlled regulatory content (the catalog, as YAML)
   VERSION.yaml       catalog version manifest
 backend/            FastAPI + SQLAlchemy + Alembic + Postgres
   app/{models,schemas,routers,services}/  audit_actions.py, security.py, config.py, database.py, main.py
-  alembic/versions/  migrations 0001–0006
-  tests/             pytest (46 tests)
+  alembic/versions/  migrations 0001–0008
+  tests/             pytest (60 tests)
 docker-compose.yml  Postgres 16
 frontend/           React 19 + Vite + TS — BUILT. Plain CSS (index.css/app.css), NOT Tailwind despite the stack-lock row below.
 ml-service/         Isolated FastAPI ML subsystem — own venv/requirements/Dockerfile (py3.12). Guard + RAG.
@@ -134,7 +134,7 @@ marketing/          landing/index.html + demo-shot-list.md (drafts)
 docker compose up -d                                   # Postgres on :5432 (comply/comply/comply)
 cd backend
 .\venv\Scripts\alembic.exe upgrade head                # apply migrations
-.\venv\Scripts\python.exe -m pytest tests/ -q          # 46 tests
+.\venv\Scripts\python.exe -m pytest tests/ -q          # 60 tests
 .\venv\Scripts\uvicorn.exe app.main:app --reload --port 8000   # catalog auto-loads on startup (lifespan)
 ```
 Auth: JWT, capability-based RBAC. First user in an org = Admin. API key model not used (JWT only).
@@ -178,10 +178,10 @@ Every control carries `confidence` (HIGH/MEDIUM/LOW interpretation certainty) an
 
 ## Current State
 
-Repo `JeevanReddy0828/comply` (private). Latest release tag **`v0.4.0`** on `main`; `main` is slightly ahead of the tag (Ask-page Markdown + full-width polish merged after it). Tags: v0.2.0/v0.2.1 (backend) → v0.3.0 (frontend) → v0.4.0 (ML service). No open PRs.
+Repo `JeevanReddy0828/comply` (private). Latest release tag **`v0.4.0`**; `main` is well ahead of it — four feature commits merged after the tag: Annex IV report → control_hash backfill → remediation workflow → profile page. No new tag cut yet (candidate `v0.5.0`). Tags: v0.2.0/v0.2.1 (backend) → v0.3.0 (frontend) → v0.4.0 (ML service). No open PRs.
 
-- **Backend: COMPLETE** (`v0.2.1`). Catalog + Auth (JWT, capability RBAC) + Audit (hash-chained, append-only triggers) + Systems + Evidence + Assessment + catalog read API + control_hash. 46 tests. Migrations 0001–0006.
-- **Frontend: pilot MVP built** (`frontend/`, Vite + React 19 + TS; **plain CSS, not Tailwind**). Pages: Login/Register, Dashboard (Day-0 onboarding → systems list), Register System (manual risk tier + acknowledgement), System Detail (score, status-colored control table, plain-language remediation, Add-Evidence modal that auto re-assesses), **Guard** and **Ask** (ML pages). Light theme; SATISFIED=green/PARTIAL=amber/MISSING=red. Core loop verified in-browser (register→assess→add evidence→flip to SATISFIED); NOT_APPLICABLE path verified. Build + lint clean.
+- **Backend: COMPLETE.** Catalog + Auth (JWT, capability RBAC) + Audit (hash-chained, append-only triggers) + Systems + Evidence + Assessment + catalog read API + control_hash. **Annex IV report** (`GET /systems/{id}/report`, evidence-traced, DRAFT-watermarked, reconstructed at the frozen timestamp). **Remediation workflow** — `RemediationTask` (migration 0007) with ownership/lifecycle, one-open-per-control partial index, and audited auto-resolution on re-assessment (run_assessment emits ASSESSMENT_RUN + per-task TASK_RESOLVED in one tx); `CAN_MANAGE_REMEDIATION` capability (migration 0008 backfills it). `GET /auth/organization` + `/auth/users` (profile/owner picker). 60 tests. Migrations 0001–0008.
+- **Frontend: pilot MVP built** (`frontend/`, Vite + React 19 + TS; **plain CSS, not Tailwind**). Pages: Login/Register, Dashboard (Day-0 onboarding → systems list), Register System (manual risk tier + acknowledgement), System Detail (score, status-colored control table, plain-language remediation, Add-Evidence modal that auto re-assesses, **inline remediation tasks** — assign owner/status/due per gap, Open-tasks count), **Annex IV Report** (print-ready, `window.print()` → PDF), **Profile** (account + organization + members, via header email link), **Guard** and **Ask** (ML pages). Light theme; SATISFIED=green/PARTIAL=amber/MISSING=red. Core loop + report + remediation auto-resolution verified in-browser. Build + lint clean.
 - **ML service: built** (`ml-service/`, isolated FastAPI, `v0.4.0`). Two advisory capabilities, kept OUT of the deterministic assessment path:
   - **Guard** — `POST /guard/check`: regex + DeBERTa prompt-injection classifier (graceful-degrades to rules if torch/model missing), per-id rate limiting. Frontend `/guard` page logs a blocked attempt as Comply evidence (`human_override_event` → satisfies HUMAN_003) — runtime defense becomes scored evidence.
   - **RAG** — `POST /rag/query` + `/rag/query/stream` (SSE): local FAISS retrieval over EU AI Act text + catalog (588 chunks, citations), answer generated via **NVIDIA NIM** (OpenAI-compatible, `nemotron-3-ultra-550b`), streamed with thinking. Frontend `/ask` page renders Markdown, full-width 2-col (answer | sources). Retrieval-only without a key. 6 tests.
@@ -194,4 +194,4 @@ Repo `JeevanReddy0828/comply` (private). Latest release tag **`v0.4.0`** on `mai
 Risk classifier (risk_tier manual), governance ledger events, sub-controls, weighted scoring, legal-approval workflow, ISO 42001 / second framework, freshness WARNING band, refresh tokens, evidence timeline UI. **Supabase** (auth/db/RLS) — evaluated & declined: its client→DB/PostgREST model conflicts with the audited service-layer invariants; only worth it later as plain hosted Postgres (swap `DATABASE_URL`).
 
 ### Known non-blocking follow-ups
-`HTTP_422_UNPROCESSABLE_ENTITY` → `_CONTENT` rename; prod `JWT_SECRET` must be ≥32 bytes; orphaned Docker volume `company-3_comply_pgdata`. **Env note:** this dev box reaps background processes & Docker Desktop when idle — backend/ml-service/Postgres often need restarting at the start of a session.
+Prod `JWT_SECRET` must be ≥32 bytes; orphaned Docker volume `company-3_comply_pgdata`. **Env note:** this dev box reaps background processes & Docker Desktop when idle — backend/ml-service/Postgres often need restarting at the start of a session. (`HTTP_422_UNPROCESSABLE_ENTITY` → `_CONTENT` rename: done.)
