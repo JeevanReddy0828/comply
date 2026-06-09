@@ -4,6 +4,7 @@
 import type {
   AISystem,
   AnnexIVReport,
+  ArticleControls,
   Compliance,
   ControlSummary,
   Evidence,
@@ -114,6 +115,7 @@ export const api = {
 
   // catalog
   listControls: () => request<ControlSummary[]>("/catalog/controls"),
+  listArticleControls: () => request<ArticleControls[]>("/catalog/articles"),
 
   // remediation
   listUsers: () => request<User[]>("/auth/users"),

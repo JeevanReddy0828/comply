@@ -67,6 +67,25 @@ def test_controls_and_requirement_filter(clean, db):
     assert {c["control_id"] for c in traceability} == {"LOG_001", "LOG_002", "LOG_003", "LOG_004"}
 
 
+def test_articles_to_controls(clean, db):
+    load_catalog(db, CATALOG)
+    db.commit()
+    client = _client()
+    tok = _token(client)
+    r = client.get("/catalog/articles", headers=_auth(tok))
+    assert r.status_code == 200
+    body = r.json()
+    by_article = {a["article"]: [c["control_id"] for c in a["controls"]] for a in body}
+    # Art.14 (human oversight) → the HUMAN controls
+    assert by_article["Art.14"] == ["HUMAN_001", "HUMAN_002", "HUMAN_003", "HUMAN_004"]
+    assert by_article["Art.12"] == ["LOG_001", "LOG_002", "LOG_003"]
+    # ordered by article number
+    nums = [int(a["article"].split(".")[1].split("(")[0]) for a in body]
+    assert nums == sorted(nums)
+    # control summaries carry review_status for the Ask panel
+    assert all("review_status" in c for a in body for c in a["controls"])
+
+
 def test_control_detail(clean, db):
     load_catalog(db, CATALOG)
     db.commit()

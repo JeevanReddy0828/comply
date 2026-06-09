@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Control, User
 from app.schemas.catalog import (
+    ArticleControlsOut,
     ControlDetailOut,
     ControlSummaryOut,
     EvidenceRequirementOut,
@@ -47,6 +48,16 @@ def controls(
     _: User = Depends(get_current_user),
 ):
     return [_summary(db, c) for c in svc.list_controls(db, framework, requirement)]
+
+
+@router.get("/articles", response_model=list[ArticleControlsOut])
+def articles(db: Session = Depends(get_db), _: User = Depends(get_current_user)):
+    """EU AI Act article → its feeding controls. Powers 'which controls back
+    Article 14?' — the bridge from Ask-the-Act answers to the catalog."""
+    return [
+        ArticleControlsOut(article=article, controls=[_summary(db, c) for c in controls])
+        for article, controls in svc.article_control_map(db)
+    ]
 
 
 @router.get("/controls/{control_id}", response_model=ControlDetailOut)

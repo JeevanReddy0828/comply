@@ -1,14 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ragQueryStream } from "../api/ml";
 import type { RagSource } from "../api/ml";
+import { api } from "../api/client";
+import type { ArticleControls } from "../api/types";
 
 const EXAMPLES = [
   "What are the human oversight obligations for high-risk AI systems?",
   "What record-keeping does the EU AI Act require?",
   "What evidence does control LOG_001 need?",
 ];
+
+// Pull article references ("Article 14", "Art. 14", "Art.14(1)") out of free text
+// and normalize to the catalog's article-level keys ("Art.14").
+function detectArticles(text: string): Set<string> {
+  const set = new Set<string>();
+  const re = /\bart(?:icle)?\.?\s*(\d{1,3})/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) set.add(`Art.${m[1]}`);
+  return set;
+}
+
+function reviewClass(status: string): string {
+  if (status === "LEGAL_APPROVED") return "ok";
+  if (status === "NEEDS_LEGAL_REVIEW") return "warn";
+  return "neutral";
+}
 
 export function AskPage() {
   const [question, setQuestion] = useState("");
@@ -19,6 +37,12 @@ export function AskPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [asked, setAsked] = useState(false);
+  const [articleMap, setArticleMap] = useState<ArticleControls[]>([]);
+  const [affected, setAffected] = useState<ArticleControls[]>([]);
+
+  useEffect(() => {
+    api.listArticleControls().then(setArticleMap).catch(() => setArticleMap([]));
+  }, []);
 
   async function ask(q: string) {
     const query = q.trim();
@@ -29,16 +53,26 @@ export function AskPage() {
     setReasoning("");
     setAnswerText("");
     setMode(null);
+    setAffected([]);
     setAsked(true);
     setLoading(true);
+    let finalAnswer = "";
+    let finalSources: RagSource[] = [];
     try {
       await ragQueryStream(query, (e) => {
-        if (e.type === "sources") setSources(e.sources);
-        else if (e.type === "reasoning") setReasoning((r) => r + e.delta);
-        else if (e.type === "answer") setAnswerText((a) => a + e.delta);
-        else if (e.type === "error") setError(e.message);
+        if (e.type === "sources") {
+          finalSources = e.sources;
+          setSources(e.sources);
+        } else if (e.type === "reasoning") setReasoning((r) => r + e.delta);
+        else if (e.type === "answer") {
+          finalAnswer += e.delta;
+          setAnswerText((a) => a + e.delta);
+        } else if (e.type === "error") setError(e.message);
         else if (e.type === "done") setMode(e.mode ?? null);
       });
+      // Bridge the answer back to the catalog: which controls back the articles it cites?
+      const detected = detectArticles([query, finalAnswer, ...finalSources.map((s) => s.citation)].join(" "));
+      setAffected(articleMap.filter((a) => detected.has(a.article)));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Query failed.");
     } finally {
@@ -145,6 +179,32 @@ export function AskPage() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {affected.length > 0 && (
+        <div className="card affected-controls">
+          <label>Controls this touches</label>
+          <p className="subtle" style={{ fontSize: "0.85rem", margin: "0.25rem 0 0.85rem" }}>
+            Catalog controls mapped to the EU AI Act articles cited above — the bridge from regulation to your
+            compliance posture. Open a system to see status and assign remediation.
+          </p>
+          {affected.map((a) => (
+            <div key={a.article} className="affected-article">
+              <div className="affected-article-head">{a.article}</div>
+              <div className="affected-control-list">
+                {a.controls.map((c) => (
+                  <div key={c.control_id} className="affected-control">
+                    <span className="affected-control-id">{c.control_id}</span>
+                    <span className="affected-control-name">{c.name}</span>
+                    <span className={`badge ${reviewClass(c.review_status)}`}>
+                      {c.review_status.replace(/_/g, " ").toLowerCase()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

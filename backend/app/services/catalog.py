@@ -2,9 +2,42 @@
 (not tenant-scoped). Only current control versions are exposed."""
 from __future__ import annotations
 
+import re
+from functools import lru_cache
+from pathlib import Path
+
+import yaml
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.models import Control, ControlRequirement, Framework, Requirement
+
+
+@lru_cache(maxsize=1)
+def _article_index() -> dict[str, list[str]]:
+    """Authoritative article -> control_ids map (article-level, e.g. 'Art.14'),
+    from the version-controlled traceability index."""
+    path = Path(settings.catalog_path) / "mappings" / "control_article_map.yaml"
+    with path.open(encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return {str(k): list(v) for k, v in (data.get("articles") or {}).items()}
+
+
+def _article_num(article: str) -> int:
+    m = re.search(r"(\d+)", article)
+    return int(m.group(1)) if m else 0
+
+
+def article_control_map(db: Session) -> list[tuple[str, list[Control]]]:
+    """Each EU AI Act article -> its current feeding controls, ordered by article
+    number. Articles with no resolvable current control are omitted."""
+    current = {c.control_id: c for c in db.query(Control).filter(Control.is_current.is_(True)).all()}
+    out: list[tuple[str, list[Control]]] = []
+    for article, control_ids in _article_index().items():
+        controls = [current[cid] for cid in control_ids if cid in current]
+        if controls:
+            out.append((article, sorted(controls, key=lambda c: c.control_id)))
+    return sorted(out, key=lambda t: _article_num(t[0]))
 
 
 def list_frameworks(db: Session) -> list[Framework]:

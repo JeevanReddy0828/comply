@@ -53,3 +53,8 @@ class ControlDetailOut(ControlSummaryOut):
     description: str
     catalog_version: str
     evidence_requirements: list[EvidenceRequirementOut]
+
+
+class ArticleControlsOut(BaseModel):
+    article: str                       # e.g. "Art.14"
+    controls: list[ControlSummaryOut]

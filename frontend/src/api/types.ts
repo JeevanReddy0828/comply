@@ -215,6 +215,11 @@ export interface EvidenceRequirement {
   required: boolean;
 }
 
+export interface ArticleControls {
+  article: string;
+  controls: ControlSummary[];
+}
+
 export interface ControlDetail extends ControlSummary {
   description: string;
   catalog_version: string;

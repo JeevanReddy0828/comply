@@ -245,6 +245,16 @@ button.secondary:hover:not(:disabled) { border-color: var(--accent); }
   a { color: var(--text); }
 }
 
+/* Ask → affected controls */
+.affected-controls { margin-top: 1rem; }
+.affected-article { padding: 0.6rem 0; border-top: 1px solid var(--border); }
+.affected-article:first-of-type { border-top: none; }
+.affected-article-head { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.5rem; }
+.affected-control-list { display: grid; gap: 0.4rem; }
+.affected-control { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; }
+.affected-control-id { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 5.5rem; }
+.affected-control-name { color: var(--text-muted); flex: 1; }
+
 /* Profile */
 .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .profile-card h2 { font-size: 1.05rem; margin-bottom: 0.9rem; }
